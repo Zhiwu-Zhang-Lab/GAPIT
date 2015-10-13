@@ -1,0 +1,2 @@
+rm gapit_functions.txt
+cat GAPIT*.R>>gapit_functions.txt
