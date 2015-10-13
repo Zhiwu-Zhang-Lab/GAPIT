@@ -24,7 +24,7 @@ function(){
 #Authors: Alex Lipka, Feng Tian, Qishan Wang, Xiaolei Liu, Meng Li,You Tang and Zhiwu Zhang
 #Citation: Lipka AE, Tian F, Wang Q, Peiffer J, Li M, Bradbury PJ, Gore MA, Buckler ES, and Zhang Z 
 #GAPIT: genome association and prediction integrated tool. Bioinformatics 2012, 28:2397-2399.
-GAPIT.Version="2015.10.12 (Categorical phenotype simulation), http://zzlab.net/GAPIT"
+GAPIT.Version="2015.10.12 (Categorical phenotype simulation, test), http://zzlab.net/GAPIT"
 return(GAPIT.Version)
 }
 
