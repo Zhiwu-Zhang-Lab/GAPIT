@@ -12,13 +12,39 @@ function(Y,G=NULL,GD=NULL,GM=NULL,KI=NULL,Z=NULL,CV=NULL,CV.Inheritance=NULL,SNP
                 sangwich.top=NULL,sangwich.bottom=NULL,QC=TRUE,GTindex=NULL,LD=0.05,
                 file.output=TRUE,cutOff=0.01, Model.selection = FALSE, Create.indicator = FALSE,
 				QTN=NULL, QTN.round=1,QTN.limit=0, QTN.update=TRUE, QTN.method="Penalty", Major.allele.zero = FALSE,
-        QTN.position=NULL){
+        QTN.position=NULL,SUPER_GD=NULL,SUPER_GS=SUPER_GS,plot.style="Beach"){
 #Object: To perform GWAS and GPS (Genomic Prediction or Selection)
 #Output: GWAS table (text file), QQ plot (PDF), Manhattan plot (PDF), genomic prediction (text file), and
 #        genetic and residual variance components
 #Authors: Zhiwu Zhang
-# Last update: may 12, 2011
+# Last update: Oct 23, 2015  by Jiabo Wang add REML threshold and SUPER GD KI
 ##############################################################################################
+if (SUPER_GS)
+{
+Compression=NULL
+kinship.optimum=NULL
+kinship=NULL
+PC=PC
+REMLs=NULL
+GWAS=NULL
+QTN=NULL
+Timmer=GAPIT.Timmer(Infor="GAPIT.SUPER.GS")
+Memory=GAPIT.Memory(Infor="GAPIT.SUPER.GS")
+
+SUPER_GS_GAPIT=GAPIT.SUPER.GS(Y=Y,G=G,GD=GD,GM=GM,KI=KI,Z=Z,CV=CV,GK=GK,kinship.algorithm=kinship.algorithm,
+                      bin.from=bin.from,bin.to=bin.to,bin.by=bin.by,inclosure.from=inclosure.from,inclosure.to=inclosure.to,inclosure.by=inclosure.by,
+				        group.from=group.from,group.to=group.to,group.by=group.by,kinship.cluster=kinship.cluster,kinship.group=kinship.group,name.of.trait=traitname,
+                        file.path=file.path,file.from=file.from, file.to=file.to, file.total=file.total, file.fragment = file.fragment, file.G=file.G,file.Ext.G=file.Ext.G,file.GD=file.GD, file.GM=file.GM, file.Ext.GD=file.Ext.GD,file.Ext.GM=file.Ext.GM, 
+                        SNP.MAF= SNP.MAF,FDR.Rate = FDR.Rate,SNP.FDR=SNP.FDR,SNP.effect=SNP.effect,SNP.impute=SNP.impute,PCA.total=PCA.total,GAPIT.Version=GAPIT.Version,
+                        GT=GT, SNP.fraction = SNP.fraction, seed = seed, BINS = BINS,SNP.test=SNP.test,DPP=DPP, SNP.permutation=SNP.permutation,
+                        LD.chromosome=LD.chromosome,LD.location=LD.location,LD.range=LD.range,SNP.CV=SNP.CV,SNP.robust=SNP.robust,
+                        genoFormat=genoFormat,hasGenotype=hasGenotype,byFile=byFile,fullGD=fullGD,PC=PC,GI=GI,Timmer = Timmer, Memory = Memory,
+                        sangwich.top=sangwich.top,sangwich.bottom=sangwich.bottom,QC=QC,GTindex=GTindex,LD=LD,file.output=file.output,cutOff=cutOff
+                        )
+	print("SUPER_GS_GAPIT FUNCTION DONE")	
+	return (list(Compression=SUPER_GS_GAPIT$Compression,kinship.optimum=SUPER_GS_GAPIT$SUPER_kinship,kinship=SUPER_GS_GAPIT$kinship, PC=SUPER_GS_GAPIT$PC,GWAS=GWAS, GPS=SUPER_GS_GAPIT$GPS,Pred=SUPER_GS_GAPIT$Pred,Timmer=Timmer,Memory=Memory,SUPER_GD=SUPER_GS_GAPIT$SUPER_GD,GWAS=NULL,QTN=NULL))
+					
+}else{
 
 
 
@@ -411,16 +437,15 @@ if(!is.null(GP))
   Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="Genotype for burger")
   Memory=GAPIT.Memory(Memory=Memory,Infor="Genotype for burger")
   
-  #print("Extracting QTNs...")  
-  #SNP.QTN=myGenotype$SNP.QTN
-  #QTN=GD[,SNP.QTN] 
-  #colnames(QTN)=myGenotype$GI[SNP.QTN,1]
-  #QTN=cbind(myGenotype$GT,QTN)   #add taxa
-  #colnames(QTN)[1]="taxa"
+print(paste("bin---",bin,"---inc---",inc,sep=""))
   GK=GD[GTindex,myGenotype$SNP.QTN]
+  SUPER_GD=GD[,myGenotype$SNP.QTN]
   SNPVar=apply(as.matrix(GK),2,var)
+  
   GK=GK[,SNPVar>0]
+  SUPER_GD=SUPER_GD[,SNPVar>0]
   GK=cbind(as.data.frame(GT[GTindex]),as.data.frame(GK)) #add taxa
+  SUPER_GD=cbind(as.data.frame(GT),as.data.frame(SUPER_GD)) #add taxa
 
   #GP=NULL
 }# end of if(is.null(GK)) 
@@ -429,7 +454,9 @@ if(!is.null(GP))
 if(!is.null(GK) & numSetting>1)
 {
 print("-------Calculating likelihood-----------------------------------")
-  myBurger=GAPIT.Burger(Y=Y,CV=CV,GK=GK)
+ # myBurger=GAPIT.Burger(Y=Y,CV=CV,GK=GK)
+    myBurger=GAPIT.Burger(Y=Y,CV=NULL,GK=GK)   #########modified by Jiabo Wang
+
   myREML=myBurger$REMLs
   myVG=myBurger$vg
   myVE=myBurger$ve
@@ -443,10 +470,13 @@ print("-------Calculating likelihood-----------------------------------")
 if(count==1){
   GK.save=GK
   LL.save=myREML
+  	SUPER_optimum_GD=SUPER_GD     ########### get SUPER GD
+
 }else{
   if(myREML<LL.save){
     GK.save=GK
     LL.save=myREML
+	SUPER_optimum_GD=SUPER_GD     ########### get SUPER GD
   }
 }
   
@@ -609,12 +639,30 @@ if(optOnly){
 
 if(numSetting>1){
 #Find the best ca,kt and group
+print(paste(as.numeric(Compression[1,4]))) ###added by Jiabo Wang 2015.7.20
+print(paste(min(as.numeric(Compression[,4]),rm.na=TRUE)))
+adjust_value=as.numeric(Compression[1,4])-min(as.numeric(Compression[,4]),rm.na=TRUE)
+nocompress_value=as.numeric(Compression[1,4])
+REML_storage=as.numeric(Compression[,4])
+
+adjust_mean=mean(as.numeric(Compression[,4]),rm.na=TRUE)
+threshold=adjust_mean*0.1       
+
+if(adjust_value<3|nocompress_value<0)     ###added by Jiabo Wang 2015.7.20
+{
+
+
+kt=Compression[1,1]
+ca=Compression[1,2]
+group=Compression[1,3]
+print(paste("Optimum: ",Compression[1,2],Compression[1,1],Compression[1,3],Compression[1,5], Compression[1,6],Compression[1,4] ,sep = " "))
+}else{
 Compression=Compression[order(as.numeric(Compression[,4]),decreasing = FALSE),]  #sort on REML
 kt=Compression[1,1]
 ca=Compression[1,2]
 group=Compression[1,3]
-
 print(paste("Optimum: ",Compression[1,2],Compression[1,1],Compression[1,3],Compression[1,5], Compression[1,6],Compression[1,4] ,sep = " "))
+}
 }#end  if(numSetting>1)
 
 print("--------------  Sandwich bottom ------------------------") 
@@ -984,14 +1032,14 @@ Memory=GAPIT.Memory(Memory=Memory,Infor="QQ plot")
    print("Manhattan plot (Genomewise)..." )
 #  if(file.output) GAPIT.Manhattan(GI.MP = PWIP$PWIP[,2:4], name.of.trait = name.of.trait, DPP=DPP, plot.type = "Genomewise",cutOff=cutOff)
 #  if(file.output) GAPIT.Manhattan(GI.MP = PWIP$PWIP[,2:4], name.of.trait = name.of.trait, DPP=DPP, plot.type = "Genomewise",cutOff=cutOff,seqQTN=QTN.position)  #QTN does not work with sorted P
-  if(file.output) GAPIT.Manhattan(GI.MP = cbind(GI[,-1],ps), name.of.trait = name.of.trait, DPP=DPP, plot.type = "Genomewise",cutOff=cutOff,seqQTN=QTN.position) 
+ if(file.output) GAPIT.Manhattan(GI.MP = cbind(GI[,-1],ps), name.of.trait = name.of.trait, DPP=DPP, plot.type = "Genomewise",cutOff=cutOff,seqQTN=QTN.position,plot.style=plot.style) 
 
  print("Manhattan plot (Chromosomewise)..." )
  #print("Guanghui debuging")
  #print(dim(PWIP$PWIP[,2:4]))
 
   #if(file.output) GAPIT.Manhattan(GI.MP = PWIP$PWIP[,2:4], name.of.trait = name.of.trait, DPP=DPP, plot.type = "Chromosomewise",cutOff=cutOff)
-  if(file.output) GAPIT.Manhattan(GI.MP = cbind(GI[,-1],ps), name.of.trait = name.of.trait, DPP=DPP, plot.type = "Chromosomewise",cutOff=cutOff)
+ if(file.output) GAPIT.Manhattan(GI.MP = cbind(GI[,-1],ps), name.of.trait = name.of.trait, DPP=DPP, plot.type = "Chromosomewise",cutOff=cutOff)
 
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="Manhattan plot")
 Memory=GAPIT.Memory(Memory=Memory,Infor="Manhattan plot")
@@ -1055,7 +1103,8 @@ print("=========================================================================
 
 if(byPass | Model.selection) Pred <- NA
 
-return (list(Timmer=Timmer,Compression=Compression,kinship.optimum=theK.return, kinship=KI,PC=PC,GWAS=GWAS, GPS=GPS,Pred=Pred,REMLs=Compression[count,4],Timmer=Timmer,Memory=Memory))
+return (list(Timmer=Timmer,Compression=Compression,kinship.optimum=theK.return, kinship=KI,PC=PC,GWAS=GWAS, GPS=GPS,Pred=Pred,REMLs=Compression[count,4],Timmer=Timmer,Memory=Memory,SUPER_GD=SUPER_GD))
+}
 
 }#The function GAPIT.Main ends here
 

@@ -12,7 +12,7 @@ function(G=NULL,GD=NULL,GM=NULL,KI=NULL,
   bin.size = 1000,inclosure.size = 100,
   sangwich.top=NULL,sangwich.bottom=NULL,
   file.output=TRUE,
-  Create.indicator = FALSE, Major.allele.zero = FALSE){
+  Create.indicator = FALSE, Major.allele.zero = FALSE,Geno.View.output=TRUE){
 #Object: To unify genotype and calculate kinship and PC if required:
 #       1.For G data, convert it to GD and GI
 #       2.For GD and GM data, nothing change 
@@ -24,7 +24,7 @@ function(G=NULL,GD=NULL,GM=NULL,KI=NULL,
 #Last update: August 11, 2011
 ##############################################################################################
 
-print("Genotyping: numericalization, sampling kinship, PCs and much more...")
+#print("Genotyping: numericalization, sampling kinship, PCs and much more...")
 
 
 
@@ -528,6 +528,22 @@ print("LD heatmap crated")
 
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="after LD plot")
 Memory=GAPIT.Memory(Memory=Memory,Infor="after LD plot")
+
+
+###output Marker density and decade of linkage disequilibrium over distance
+if(!is.null(GI) & !is.null(GD) & file.output & Geno.View.output){
+ViewGenotype<-GAPIT.Genotype.View(
+myGI=GI,
+myGD=GD,
+#chr=1,
+#w1_start=30,
+#w1_end=230,
+#mav1=10
+)
+}
+
+
+
 
 
 #print("Genotype successfully acomplished")

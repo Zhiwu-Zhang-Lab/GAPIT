@@ -3,7 +3,7 @@ function(KW,KO,KWO,GAU,UW){
 #Object: to derive BLUP for the individuals without phenotype
 #Output: BLUP
 #Authors: Zhiwu Zhang 
-# Last update: April 17, 2011 
+# Last update: Oct 22, 2015  by Jiabo Wang
 ##############################################################################################
 #print(length(UW))
 UO=try(t(KWO)%*%solve(KW)%*%UW)
@@ -11,26 +11,29 @@ if(inherits(UO, "try-error")) UO=t(KWO)%*%ginv(KW)%*%UW
 
 n=ncol(UW) #get number of columns, add additional for individual name
 
-#Assign BLUP of group to its individuals
 BLUP=data.frame(as.matrix(GAU[,1:4]))
-#BLUP.W=BLUP[which(GAU[,3]==1),]
 BLUP.W=BLUP[which(GAU[,3]<2),]
-order.W=order(as.numeric(as.matrix(BLUP.W[,4])))
-ID.W=as.numeric(as.matrix(BLUP.W[order.W,4]))
+W_BLUP=BLUP.W[order(as.numeric(as.matrix(BLUP.W[,4]))),]
+UW=UW[which(rownames(UW)==colnames(KW)),] # get phenotype groups order
+
+ID.W=as.numeric(as.matrix(W_BLUP[,4]))
 n.W=max(ID.W)
 DS.W=diag(n.W)[ID.W,]
 ind.W=DS.W%*%UW
-all.W=cbind(BLUP.W[order.W,],ind.W)
+
+all.W=cbind(W_BLUP,ind.W)
 all=all.W
 
 BLUP.O=BLUP[which(GAU[,3]==2),]
-if(nrow(BLUP.O)>0){
-order.O=order(as.numeric(as.matrix(BLUP.O[,4])))
-ID.O=as.numeric(as.matrix(BLUP.O[order.O,4]))
+O_BLUP=BLUP.O[order(as.numeric(as.matrix(BLUP.O[,4]))),]
+print(dim(O_BLUP))
+if(nrow(O_BLUP)>0){
+
+ID.O=as.numeric(as.matrix(O_BLUP[,4]))
 n.O=max(ID.O)
 DS.O=diag(n.O)[ID.O,]
 ind.O=DS.O%*%UO
-all.O=cbind(BLUP.O[order.O,],ind.O)
+all.O=cbind(O_BLUP,ind.O)
 all=rbind(all.W,all.O)
 }
 

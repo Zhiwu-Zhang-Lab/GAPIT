@@ -1,6 +1,6 @@
 `GAPIT.Manhattan` <-
 function(GI.MP = NULL, name.of.trait = "Trait",plot.type = "Genomewise",
-DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="rainbow"){
+DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="Beach"){
     #Object: Make a Manhattan Plot
     #Options for plot.type = "Separate_Graph_for_Each_Chromosome" and "Same_Graph_for_Each_Chromosome"
     #Output: A pdf of the Manhattan Plot
@@ -17,6 +17,7 @@ DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="rainbow"){
     #print(dim(GI.MP))
     #print(head(GI.MP))
     #print(tail(GI.MP))
+    
     
     #seqQTN=c(300,1000,2500)
     
@@ -61,14 +62,11 @@ DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="rainbow"){
     if(plot.type == "Chromosomewise")
     {
         #print("Manhattan ploting Chromosomewise")
-        if(plot.style=="rainbow"){
-        pdf(paste("GAPIT.", name.of.trait,".Manhattan-Plot.Chromosomewise.pdf" ,sep = ""), width = 10)
-        par(mar = c(5,5,4,3), lab = c(8,5,7))
-        }
-        if(plot.style=="FarmCPU"){
-            pdf(paste("FarmCPU.", name.of.trait,".Manhattan-Plot.Chromosomewise.pdf" ,sep = ""), width = 10)
+
+            pdf(paste("GAPIT.", name.of.trait,".Manhattan.Plot.Chromosomewise.pdf" ,sep = ""), width = 10)
             par(mar = c(5,5,4,3), lab = c(8,5,7))
-        }
+ 
+        
         for(i in 1:numCHR)
         {
             #Extract SBP on this chromosome
@@ -98,9 +96,8 @@ DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="rainbow"){
             y=y[index]
             
             ##print(paste("after prune: chr: ",i, "length: ",length(x),"max p",max(y), "min p",min(y), "max x",max(x), "Min x",min(x)))
-            
-            #color.vector <- subset(temp.par.data[,7], temp.par.data[,4] == i)
-            plot(y~x,type="p", ylim=c(0,y.lim), xlim = c(min(x), max(x)), col = "navy", xlab = expression(Base~Pairs~(x10^-6)), ylab = "-Log Base 10 p-value", main = paste("Chromosome",chm.to.analyze[i],sep=" "),cex.lab=1.6)
+
+            plot(y~x,type="p", ylim=c(0,y.lim), xlim = c(min(x), max(x)), col = "navy", xlab = expression(Base~Pairs~(x10^-6)), ylab = "-Log Base 10 p-value", main = 			paste("Chromosome",chm.to.analyze[i],sep=" "),cex.lab=1.6)
             
             abline(h=bonferroniCutOff,col="forestgreen")
             ##print("manhattan plot (chr) finished")
@@ -117,16 +114,37 @@ DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="rainbow"){
         #Set corlos for chromosomes
         #nchr=max(chm.to.analyze)
         nchr=length(chm.to.analyze)
+
+    #Set color schem            
         ncycle=ceiling(nchr/band)
         ncolor=band*ncycle
         #palette(rainbow(ncolor+1))
         cycle1=seq(1,nchr,by= ncycle)
         thecolor=cycle1
-        
         for(i in 2:ncycle){thecolor=c(thecolor,cycle1+(i-1))}
+      	col.Rainbow=rainbow(ncolor+1)[thecolor]     	
+     	col.FarmCPU=rep(c("#CC6600","deepskyblue","orange","forestgreen","indianred3"),ceiling(numCHR/5))
+    	col.Rushville=rep(c("orangered","navyblue"),ceiling(numCHR/2))   	
+		col.Congress=rep(c("deepskyblue3","firebrick"),ceiling(numCHR/2))
+ 		col.Ocean=rep(c("steelblue4","cyan3"),ceiling(numCHR/2)) 		
+ 		col.PLINK=rep(c("gray10","gray70"),ceiling(numCHR/2)) 		
+  		col.Beach=rep(c("turquoise4","indianred3","darkolivegreen3","red","aquamarine3","darkgoldenrod"),ceiling(numCHR/5))
+ 	
+        if(plot.style=="Rainbow")plot.color= col.Rainbow
+        if(plot.style =="FarmCPU")plot.color= col.FarmCPU
+        if(plot.style =="Rushville")plot.color= col.Rushville
+        if(plot.style =="Congress")plot.color= col.Congress
+        if(plot.style =="Ocean")plot.color= col.Ocean
+        if(plot.style =="PLINK")plot.color= col.PLINK
+        if(plot.style =="Beach")plot.color= col.Beach
+        
+		#FarmCPU uses filled dots
+    	mypch=1
+    	if(plot.style =="FarmCPU")mypch=20
+    	        
         GI.MP <- GI.MP[order(GI.MP[,2]),]
         GI.MP <- GI.MP[order(GI.MP[,1]),]
-        color.vector <- rep(c("orangered","navyblue"),numCHR)
+
         ticks=NULL
         lastbase=0
         
@@ -165,46 +183,32 @@ DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="rainbow"){
         size=1
         ratio=5
         base=1
-        themax=max(y)
-        themin=min(y)
+        themax=ceiling(max(y))
+        themin=floor(min(y))
         wd=((y-themin+base)/(themax-themin+base))*size*ratio
         s=size-wd/ratio/2
         
         #print("Manhattan XY created")
-        
-        #pdf(paste("GAPIT.", name.of.trait,".Manhattan-Plot.Genomewise.pdf" ,sep = ""), width = 13,height=5.5)
-        #par(mar = c(3,6,3,1))
-        
-        if(plot.style=="FarmCPU"){
-            pdf(paste("FarmCPU.", name.of.trait,".Manhattan-Plot.Genomewise.pdf" ,sep = ""), width = 13,height=5.75)
+       
+            pdf(paste("GAPIT.", name.of.trait,".Manhattan.Plot.Genomewise.pdf" ,sep = ""), width = 13,height=5.75)
             par(mar = c(3,6,5,1))
-            palette(c("#CC6600","deepskyblue","orange","forestgreen","indianred3"))
-            plot(y~x,xlab="",ylab=expression(-log[10](italic(p))),
-            cex.axis=1.5, cex.lab=2, col=c("#CC6600","deepskyblue","orange","forestgreen","indianred3","#CC6600","deepskyblue","orange","forestgreen","indianred3","#CC6600","deepskyblue","orange","forestgreen","indianred3","#CC6600","deepskyblue","orange","forestgreen","indianred3","#CC6600","deepskyblue","orange","forestgreen","indianred3","#CC6600","deepskyblue","orange","forestgreen","indianred3","#CC6600","deepskyblue","orange","forestgreen","indianred3","#CC6600","deepskyblue","orange","forestgreen","indianred3","#CC6600","deepskyblue","orange","forestgreen","indianred3","#CC6600","deepskyblue","orange","forestgreen","indianred3")[z], axes=FALSE, type = "p", pch=20, lwd=wd, cex=s+0.3, main = paste(name.of.trait,sep=" "), cex.main=2.5, bty='n',ylim=c(0,y.lim))
+        	plot(y~x,xlab="",ylab=expression(-log[10](italic(p))) ,
+        	cex.axis=1.5, cex.lab=2, ,col=plot.color[z],axes=FALSE,type = "p",pch=mypch,lwd=wd,cex=s+.3,main = paste(name.of.trait,sep=" 			"),cex.main=2.5)
         
-        }
-        if(plot.style=="rainbow"){
-            pdf(paste("GAPIT.", name.of.trait,".Manhattan-Plot.Genomewise.pdf" ,sep = ""), width = 13,height=5.75)
-            par(mar = c(3,6,5,1))
-        palette(rainbow(ncolor+1))
-        #plot(y~x,xlab=expression(Chromosome),ylab=expression(-log[10](italic(p))) ,
-        #       cex.lab=2,col=ifelse(z%%2==0,"orangered","navy"),axes=FALSE,type = "p",pch=20,main = paste(name.of.trait,sep=" "))
-        #plot(y~x,xlab=expression(Chromosome),ylab=expression(-log[10](italic(p))) ,
-        #       cex.lab=2,col=thecolor[z],axes=FALSE,type = "p",pch=20,main = paste(name.of.trait,sep=" "))
-        #plot(y~x,xlab=expression(Chromosome),ylab=expression(-log[10](italic(p))) ,
-        #     cex.lab=2,col=thecolor[z],axes=FALSE,type = "p",pch=1,lwd=wd,cex=s,main = paste(name.of.trait,sep=" "))
-        plot(y~x,xlab="",ylab=expression(-log[10](italic(p))) ,
-        cex.axis=1.5, cex.lab=2, ,col=thecolor[z],axes=FALSE,type = "p",pch=1,lwd=wd,cex=s,main = paste(name.of.trait,sep=" "),cex.main=2.5)
-        }
+        #Label QTN positions
         if(is.vector(QTN)){
             abline(v=QTN[2], lty = 2, lwd=1.5, col = "grey")
         }else{
             abline(v=QTN[,2], lty = 2, lwd=1.5, col = "grey")
         }
-        abline(h=bonferroniCutOff,col="forestgreen")
         
+        #Add a horizontal line for bonferroniCutOff
+        abline(h=bonferroniCutOff,col="forestgreen")
+       
+        #Set axises
         axis(1, at=ticks,cex.axis=1.5,labels=chm.to.analyze,tick=F)
-        axis(2, at=1:y.lim,cex.axis=1.5,labels=1:y.lim,tick=F)
+        axis(2, at=1:themax,cex.axis=1.5,labels=1:themax,tick=F)
+
         box()
         palette("default")
         dev.off()

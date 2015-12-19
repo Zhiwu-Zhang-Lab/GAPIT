@@ -1,4 +1,4 @@
-`GAPIT.Genotype.View` <-function(myG=NULL,chr=NULL, w1_start=NULL,w1_end=NULL,mav1=NULL){
+`GAPIT.Genotype.View` <-function(myGI=NULL,myGD=NULL,chr=NULL, w1_start=NULL,w1_end=NULL,mav1=NULL){
 # Object: Analysis for Genotype data:Distribution of SNP density,Accumulation,Moving Average of density,result:a pdf of the scree plot
 # myG:Genotype data
 # chr: chromosome value
@@ -9,7 +9,9 @@
 # Last update: Sep 7, 2015 
 ############################################################################################## 
 
-if(is.null(myG)){stop("Validation Invalid. Please select read valid Genotype flies  !")}
+if(is.null(myGI)){stop("Validation Invalid. Please select read valid Genotype flies  !")}
+
+if(is.null(myGD)){stop("Validation Invalid. Please select read valid Genotype flies  !")}
 
 if(is.null(w1_start)){w1_start=1}
 
@@ -20,7 +22,7 @@ if(is.null(mav1)){mav1=10}
 
 if(is.null(chr)){chr=1}
 
-myFig21<-myG[-1,c(1,3:4)]
+myFig21<-myGI
 myFig21<-myFig21[!is.na(as.numeric(as.matrix(myFig21[,3]))),]
 
 n<-nrow(myFig21)
@@ -47,12 +49,7 @@ subResult[i]<-0
 results<-cbind(myFig2,subResult)
 
 #####Out  Distribution of SNP density ##########
-#pdf("Distribution of SNP.pdf", width =10, height = 6)
-#par(mar = c(5,5,5,5))
 
-#hist(as.numeric(as.matrix(results[,4])),xlab="Density",main="Distribution of SNP",breaks=12, cex.axis=0.9,col = "gray")
-
-#dev.off()
 
 #####Out Accumulation##########
 
@@ -65,12 +62,6 @@ m<-nrow(myFig22)
 kk1<-matrix(1:m,m,1)
 results2<-cbind(myFig22,kk1)
 max2<-max(myFig22[,4])
-#pdf("Accumulation of SNP.pdf", width =10, height = 6)
-#par(mar = c(5,5,5,5))
-#plot(results2[,4],results2[,5]/m,bg="lightgray",xlab="Density",ylab="Accumulation",type="l",pch=20,col="red",cex=1.0,cex.lab=1.3, cex.axis=0.9, lwd=3,las=1,xlim=c(0,max2))
-# abline(h=0,col="forestgreen",lty=2)
-# abline(h=1,col="forestgreen",lty=2)
-#dev.off()
 
 
 pdf("Combination of Distribution and Accumulation.pdf", width =10, height = 6)
@@ -90,24 +81,17 @@ dev.off()
 
 
 #####Out Moving Average of density##########
-myG1<-myG[-1,]
-myG1<-myG1[!is.na(as.numeric(as.matrix(myG1[,4]))),]
-#input chr value
 
-#chr<-1
-
-myGDc1<-myG1[myG1[,3]==chr,]
-
-myG1<-rbind(myG[1,],myGDc1)
-#Conversion Numeric SNP Genotype from myG
-myGAPIT00=GAPIT(G=myG1,PCA.total=3,file.output=FALSE)
+myGD<-myGD[,myGI[,2]==chr]
+gc()
 
 
-myGD0=myGAPIT00$GD
-myGM0=myGAPIT00$GI
+myGM0<-myGI[myGI[,2]==chr,]
+
 
 ##remove invalid SNPs
-X<-myGD0[,-1]
+#X<-myGD0[,-1]
+X<-myGD
 colMax=apply(X,2,max)  
 colMin=apply(X,2,min)
 #mono=as.numeric(colMax)-as.numeric(colMin)
@@ -207,7 +191,7 @@ dev.off()
 
 
 
-print(paste("GAPIT.Genotype.View ", ".Three pdf generate.","successfully!" ,sep = ""))
+print(paste("GAPIT.Genotype.View ", ".Two pdf generate.","successfully!" ,sep = ""))
 
 #GAPIT.Genotype.View
 }

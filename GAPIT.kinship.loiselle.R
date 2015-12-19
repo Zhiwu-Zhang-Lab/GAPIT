@@ -1,4 +1,3 @@
-snps=yy
 `GAPIT.kinship.loiselle` <-
 function(snps, method="additive", use="all") {
 # Object: To calculate the kinship matrix using the method of Loiselle et al. (1995)

@@ -1,5 +1,5 @@
 `GAPIT.Power` <-
-function(WS=c(1e0,1e3,1e4,1e5,1e6), GM=NULL,seqQTN=NULL,GWAS=NULL,maxOut=100,
+function(WS=c(1e0,1e3,1e4,1e5,1e6,1e7), GM=NULL,seqQTN=NULL,GWAS=NULL,maxOut=100,
 alpha=c(.01,.05,.1,.2,.3,.4,.5,.6,.7,.8,.9,1),MaxBP=1e10){
 #Object: To evaluate power and FDR for the top (maxOut) positive interval defined by WS
 #Input: WS- window size 
@@ -11,7 +11,7 @@ alpha=c(.01,.05,.1,.2,.3,.4,.5,.6,.7,.8,.9,1),MaxBP=1e10){
 #Output: Table and Plots
 #Authors: Zhiwu Zhang
 # Date  start: April 2, 2013
-# Last update: Sep 14, 2015
+# Last update: April 2, 2013
 ##############################################################################################
 #print("GAPIT.Power Started")
 if(is.null(seqQTN) | is.null(GM)) return(list(FDR=NULL,Power=NULL,Power.Alpha=NULL,alpha=NULL))

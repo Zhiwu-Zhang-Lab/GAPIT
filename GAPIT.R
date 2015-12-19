@@ -16,11 +16,11 @@ function(Y=NULL,G=NULL,GD=NULL,GM=NULL,KI=NULL,Z=NULL,CV=NULL,CV.Inheritance=NUL
         method.GLM="fast.lm",method.sub="reward",method.sub.final="reward",method.bin="static",bin.size=c(1000000),bin.selection=c(10,20,50,100,200,500,1000),
         memo="",Prior=NULL,ncpus=1,maxLoop=3,threshold.output=.01,
         WS=c(1e0,1e3,1e4,1e5,1e6,1e7),alpha=c(.01,.05,.1,.2,.3,.4,.5,.6,.7,.8,.9,1),maxOut=100,QTN.position=NULL,
-        converge=1,iteration.output=FALSE,acceleration=0,iteration.method="accum",PCA.View.output=TRUE){
+        converge=1,iteration.output=FALSE,acceleration=0,iteration.method="accum",PCA.View.output=TRUE,Geno.View.output=TRUE,plot.style="Beach",SUPER_GD=NULL,SUPER_GS=FALSE){
 #Object: To perform GWAS and GPS (Genomic Prediction/Selection)
 #Designed by Zhiwu Zhang
-#Writen by Alex Lipka, Feng Tian ,You Tang and Zhiwu Zhang
-#Last update: October 13, 2015 
+#Writen by Alex Lipka, Feng Tian ,You Tang ,Jiabo Wang and Zhiwu Zhang
+#Last update: Oct 23, 2015  by Jiabo Wang add REML threshold and SUPER GK
 ##############################################################################################
 print("--------------------- Welcome to GAPIT ----------------------------")
 echo=TRUE
@@ -52,7 +52,7 @@ myGenotype<-GAPIT.Genotype(G=G,GD=GD,GM=GM,KI=KI,kinship.algorithm=kinship.algor
                 SNP.MAF=SNP.MAF,FDR.Rate = FDR.Rate,SNP.FDR=SNP.FDR,SNP.effect=SNP.effect,SNP.impute=SNP.impute,
                 LD.chromosome=LD.chromosome,LD.location=LD.location,LD.range=LD.range,
                 GP=GP,GK=GK,bin.size=NULL,inclosure.size=NULL, Timmer = Timmer,Memory=Memory,
-                sangwich.top=sangwich.top,sangwich.bottom=sangwich.bottom,GTindex=NULL,file.output=file.output, Create.indicator = Create.indicator, Major.allele.zero = Major.allele.zero)
+                sangwich.top=sangwich.top,sangwich.bottom=sangwich.bottom,GTindex=NULL,file.output=file.output, Create.indicator = Create.indicator, Major.allele.zero = Major.allele.zero,Geno.View.output=Geno.View.output)
 
 Timmer=myGenotype$Timmer
 Memory=myGenotype$Memory
@@ -60,16 +60,6 @@ Memory=myGenotype$Memory
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="Genotype for all")
 Memory=GAPIT.Memory(Memory=Memory,Infor="Genotype for all")
 
-###output Marker density and decade of linkage disequilibrium over distance
-if(!is.null(G) & file.output){
-ViewGenotype<-GAPIT.Genotype.View(
-myG=G,
-#chr=1,
-#w1_start=30,
-#w1_end=230,
-#mav1=10
-)
-}
 
 KI=myGenotype$KI
 PC=myGenotype$PC
@@ -140,7 +130,7 @@ gapitMain <- GAPIT.Main(Y=Y[,c(1,trait)],G=G,GD=GD,GM=GM,KI=KI,Z=Z,CV=CV,CV.Inhe
                         sangwich.top=sangwich.top,sangwich.bottom=sangwich.bottom,QC=QC,GTindex=GTindex,LD=LD,file.output=file.output,cutOff=cutOff, 
                         Model.selection = Model.selection, Create.indicator = Create.indicator,
 						            QTN=QTN, QTN.round=QTN.round,QTN.limit=QTN.limit, QTN.update=QTN.update, QTN.method=QTN.method, Major.allele.zero=Major.allele.zero,
-                        QTN.position=QTN.position)  
+                        QTN.position=QTN.position,plot.style=plot.style,SUPER_GS=SUPER_GS)  
 }# end of loop on trait
 
 if(ncol(Y>2) &file.output)
@@ -156,6 +146,26 @@ write.table(Memory, file, quote = FALSE, sep = ",", row.names = FALSE,col.names 
 }
 
 if(ncol(Y)==2) {
+  if (!SUPER_GS){
+#Evaluate Power vs FDR and type I error
+myPower=GAPIT.Power(WS=WS, alpha=alpha, maxOut=maxOut,seqQTN=QTN.position,GM=GM,GWAS=gapitMain$GWAS)
+
+
+h2= as.matrix(as.numeric(as.vector(gapitMain$Compression[,5]))/(as.numeric(as.vector(gapitMain$Compression[,5]))+as.numeric(as.vector(gapitMain$Compression[,6]))),length(gapitMain$Compression[,6]),1)
+colnames(h2)=c("Heritability")
+  print("GAPIT accomplished successfully for single trait. Results are saved. GWAS are returned!")
+  return (list(QTN=gapitMain$QTN,GWAS=gapitMain$GWAS,GPS=gapitMain$GPS,Pred=gapitMain$Pred,compression=as.data.frame(cbind(gapitMain$Compression,h2)), 
+  kinship.optimum=gapitMain$kinship.optimum,kinship=gapitMain$kinship,PCA=gapitMain$PC,
+    FDR=myPower$FDR,Power=myPower$Power,Power.Alpha=myPower$Power.Alpha,alpha=myPower$alpha,SUPER_GD=gapitMain$SUPER_GD))
+}else{
+h2= as.matrix(as.numeric(as.vector(gapitMain$Compression[,5]))/(as.numeric(as.vector(gapitMain$Compression[,5]))+as.numeric(as.vector(gapitMain$Compression[,6]))),length(gapitMain$Compression[,6]),1)
+colnames(h2)=c("Heritability")
+  print("GAPIT accomplished successfully for single trait. Results are saved. GPS are returned!")
+  return (list(QTN=gapitMain$QTN,GWAS=gapitMain$GWAS,GPS=gapitMain$GPS,Pred=gapitMain$Pred,compression=as.data.frame(cbind(gapitMain$Compression,h2)), 
+  kinship.optimum=gapitMain$kinship.optimum,kinship=gapitMain$kinship,PCA=gapitMain$PC,
+    SUPER_GD=gapitMain$SUPER_GD))
+
+}
 
 #Evaluate Power vs FDR and type I error
 myPower=GAPIT.Power(WS=WS, alpha=alpha, maxOut=maxOut,seqQTN=QTN.position,GM=GM,GWAS=gapitMain$GWAS)
