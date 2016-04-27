@@ -5,7 +5,6 @@ function(Y=NULL,KI=NULL,GT=NULL,CV=NULL,Z=NULL,GK=NULL){
 #Authors: Zhiwu Zhang and Alex Lipka 
 # Last update: April 14, 2011 
 ##############################################################################################
-
 #Remove duplicates 
 print("Removing duplicates...")
 Y=GAPIT.RemoveDuplicate(Y)
@@ -132,9 +131,6 @@ if(!is.null(GK)) GK=GK[GK[,1]%in%taxa,]
 if(!is.null(GT)) taxa.kept=data.frame(taxa.kept[taxa.kept%in%taxa])
 #Y <- Y[Y[,1]%in%taxa.kept,]
 
-print("size of taxa.kept")
-print(dim(taxa.kept))
-
 #To sort Y, GT, CV and Z
 Y=Y[order(Y[,1]),]
 CV=CV[order(CV[,1]),]
@@ -150,4 +146,5 @@ flag=nrow(Y)==nrow(Z)-1&nrow(Y)==nrow(GT)&nrow(Y)==nrow(CV)
 print("GAPIT.QC accomplished successfully!")
 return(list(Y = Y, KI = KI, GT = GT, CV = CV, Z = Z, GK = GK, GTindex=GTindex, flag=flag))
 }#The function GAPIT.QC ends here
+#=============================================================================================
 

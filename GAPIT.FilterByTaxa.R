@@ -7,12 +7,13 @@ function(taxa,Data){
     #Output: filtered data
     #Authors: Zhiwu Zhang
     # Last update: May 22, 2013
-    ##############################################################################################
-    #print("GAPIT.FilterByTaxa Started")
+##############################################################################################
+   #print("GAPIT.FilterByTaxa Started")
 
     Data=Data[match(taxa, Data[,1], nomatch = 0),]
 
   return (Data)
 
 }#The function GAPIT.FilterByTaxa ends here
+#=============================================================================================
 

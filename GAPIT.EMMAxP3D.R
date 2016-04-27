@@ -1,4 +1,3 @@
-
 `GAPIT.EMMAxP3D` <-
 function(ys,xs,K=NULL,Z=NULL,X0=NULL,CVI=NULL,CV.Inheritance=NULL,GI=NULL,GP=NULL,
 		file.path=NULL,file.from=NULL,file.to=NULL,file.total=1, genoFormat="Hapmap", file.fragment=NULL,byFile=FALSE,fullGD=TRUE,SNP.fraction=1,
@@ -8,12 +7,11 @@ function(ys,xs,K=NULL,Z=NULL,X0=NULL,CVI=NULL,CV.Inheritance=NULL,GI=NULL,GP=NUL
 #Object: To esimate variance component by using EMMA algorithm and perform GWAS with P3D/EMMAx
 #Output: ps, REMLs, stats, dfs, vgs, ves, BLUP,  BLUP_Plus_Mean, PEV
 #Authors: Feng Tian, Alex Lipka and Zhiwu Zhang
-# Last update: April 26, 2011
+# Last update: April 6, 2016
 # Library used: EMMA (Kang et al, Genetics, Vol. 178, 1709-1723, March 2008)
 # Note: This function was modified from the function of emma.REML.t from the library
 ##############################################################################################
-
-#print("EMMAxP3D started...")
+  print("EMMAxP3D started...")
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="P3D Start")
 Memory=GAPIT.Memory(Memory=Memory,Infor="P3D Start")
 
@@ -33,10 +31,7 @@ if(is.null(X0)) X0 <- matrix(1, ncol(ys), 1)
 
 #handler of special Z and K
 if(!is.null(Z)){ if(ncol(Z) == nrow(Z)) Z = NULL }
-#if(!is.null(K)) {if(length(K)<2) K = NULL}
 if(!is.null(K)) {if(length(K)<= 1) K = NULL}
-
-
 
 #Extract dimension information
 g <- nrow(ys) #number of traits
@@ -59,9 +54,8 @@ Memory=GAPIT.Memory(Memory=Memory,Infor="eig.L")
 #decomposation with fixed effect (SNP not included)
 #print("Calling emma.eigen.R.w.Z...")
 X <-  X0 #covariate variables such as population structure
-
-if(!is.null(Z) & !is.null(K)) eig.R <- try(emma.eigen.R.w.Z(Z, K, X)) #This will be used to get REstricted ML (REML)
-if(is.null(Z)  & !is.null(K)) eig.R <- try(emma.eigen.R.wo.Z(   K, X)) #This will be used to get REstricted ML (REML)
+if(!is.null(Z) & !is.null(K)) eig.R <- try(emma.eigen.R.w.Z(Z, K, X),silent=TRUE) #This will be used to get REstricted ML (REML)
+if(is.null(Z)  & !is.null(K)) eig.R <- try(emma.eigen.R.wo.Z(   K, X),silent=TRUE) #This will be used to get REstricted ML (REML)
 
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="eig.R")
 Memory=GAPIT.Memory(Memory=Memory,Infor="eig.R")
@@ -82,7 +76,7 @@ if(inherits(eig.R, "try-error"))
 
  }
 #-------------------------------------------------------------------------------------------------------------------->
-#print("Looping through traits...")
+print("Looping through traits...")
 #Loop on Traits
 for (j in 1:g)
 {
@@ -165,7 +159,7 @@ if(optOnly){
      X0Y <- crossprod(X0t,yt)
      XY <- X0Y
 
-     iX0X0 <- try(solve(X0X0))
+     iX0X0 <- try(solve(X0X0),silent=TRUE)
      if(inherits(iX0X0, "try-error")){
      iX0X0 <- ginv(X0X0)
      print("At least two of your covariates are linearly dependent. Please reconsider the covariates you are using for GWAS and GPS")
@@ -174,13 +168,16 @@ if(optOnly){
     }
 
       if(is.null(K)){
-       iXX <- solve(crossprod(X,X))
-       XY = crossprod(X,yv)
+        iXX <- try(solve(crossprod(X,X)),silent=TRUE)
+        if(inherits(iXX, "try-error"))iXX <- ginv(crossprod(X,X))
+        XY = crossprod(X,yv)
       }
       beta <- crossprod(iXX,XY) #Note: we can use crossprod here because iXX is symmetric
-
       X.beta <- X%*%beta
-
+      
+      beta.cv=beta
+      BLUE=X.beta
+      
       if(!is.null(K)){
               U.times.yv.minus.X.beta <- crossprod(U,(yv-X.beta))
               logLM <- 0.5*(-length(yv)*log(((2*pi)/length(yv))*crossprod(U.times.yv.minus.X.beta,U.times.yv.minus.X.beta))
@@ -338,7 +335,7 @@ Memory=GAPIT.Memory(Memory=Memory,Infor="Genotype file converted")
 #Skip REML if xs is from a empty fragment file
 if(!is.null(xs))  {
 
-                
+   
   if(is.null(dim(xs)) || nrow(xs) == 1)  xs <- matrix(xs, length(xs),1)
   
   xs <- as.matrix(xs)
@@ -475,12 +472,15 @@ for (i in loopStart:mloop){
       }
      
       if(!Create.indicator){ #### Feng changed
+	   #print(xs[1:10,1:10])
+
        xv <- xs[vids,i]
        vids <- !is.na(xs[,i]) #### Feng changed
       
        vids.TRUE=which(vids==TRUE)
        vids.FALSE=which(vids==FALSE)
        ns=length(xv)
+	   #print(xv))
        ss=sum(xv)
 
        maf[i]=min(.5*ss/ns,1-.5*ss/ns)
@@ -697,7 +697,7 @@ for (i in loopStart:mloop){
        A12=UU[vids.TRUE,vids.FALSE]
        A21=UU[vids.FALSE,vids.TRUE]
        A22=UU[vids.FALSE,vids.FALSE]
-       A22i =try(solve(A22) )
+       A22i =try(solve(A22),silent=TRUE )
        if(inherits(A22i, "try-error")) A22i <- ginv(A22)
 
        F11=A11-A12%*%A22i%*%A21
@@ -705,7 +705,7 @@ for (i in loopStart:mloop){
        XY=crossprod(X,F11)%*%yv
       }
       if(i == 0 &file==file.from &frag==1){
-       iX0X0 <- try(solve(X0X0))
+       iX0X0 <- try(solve(X0X0),silent=TRUE)
        if(inherits(iX0X0, "try-error")){
          iX0X0 <- ginv(X0X0)
          print("At least two of your covariates are linearly dependent. Please reconsider the covariates you are using for GWAS and GPS")
@@ -757,8 +757,9 @@ for (i in loopStart:mloop){
       }
 
       if(is.null(K)){
-       iXX <- solve(crossprod(X,X))
-       XY = crossprod(X,yv)
+        iXX <- try(solve(crossprod(X,X)),silent=TRUE)
+        if(inherits(iXX, "try-error"))iXX <- ginv(crossprod(X,X))
+        XY = crossprod(X,yv)
       }
 
       #iXX <- try(solve(XX))
@@ -773,13 +774,17 @@ for (i in loopStart:mloop){
 
 #-------------------------------------------------------------------------------------------------------------------->
 
+       
 #--------------------------------------------------------------------------------------------------------------------<
       if(i ==0 &file==file.from &frag==1 & !is.null(K))
       {
         Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="ReducedModel")
 Memory=GAPIT.Memory(Memory=Memory,Infor="ReducdModel")
 
+        #beta.cv=beta
 
+        
+        
         XtimesBetaHat <- X%*%beta
 
         YminusXtimesBetaHat <- ys[j,]- XtimesBetaHat
@@ -816,17 +821,17 @@ Memory=GAPIT.Memory(Memory=Memory,Infor="ReducdModel")
         Memory=GAPIT.Memory(Memory=Memory,Infor="BLUP")
 
         #PEV
-        C11=try(vgs*solve(crossprod(Xt,Xt)))
+        C11=try(vgs*solve(crossprod(Xt,Xt)),silent=TRUE)
         if(inherits(C11, "try-error")) C11=vgs*ginv(crossprod(Xt,Xt))
 
         C21=-K%*%crossprod(Zt,Xt)%*%C11
-        Kinv=try(solve(K)    )
+		Kinv=try(solve(K)  ,silent=TRUE  ) 
         if(inherits(Kinv, "try-error")) Kinv=ginv(K)
-
+        
         if(!is.null(Z)) term.0=crossprod(Z,Z)/ves
         if(is.null(Z)) term.0=diag(1/ves,nrow(K))
 
-        term.1=try(solve(term.0+Kinv/vgs )  )
+        term.1=try(solve(term.0+Kinv/vgs ) ,silent=TRUE )
         if(inherits(term.1, "try-error")) term.1=ginv(term.0+Kinv/vgs )
 
         term.2=C21%*%crossprod(Xt,Zt)%*%K
@@ -905,7 +910,7 @@ gc()
 }
 
       if(i == 0 &file==file.from & frag==1){
-
+      beta.cv=beta
       X.beta <- X%*%beta
 
       if(!is.null(K)){
@@ -1008,19 +1013,11 @@ if(!fullGD)
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="GWAS done for this Trait")
 Memory=GAPIT.Memory(Memory=Memory,Infor="GWAS done for this Trait")
 
-#print("debug 1b@@@@@")
-#print(length(ps))
-#write.table(ps,"debug.csv",sep=",")
-
+print("GAPIT.EMMAxP3D accomplished successfully!")
 
     return(list(ps = ps, REMLs = -2*REMLs, stats = stats, effect.est = effect.est, rsquare_base = rsquare_base, rsquare = rsquare, dfs = dfs, df = df, tvalue = tvalue, stderr = stderr,maf=maf,nobs = nobs,Timmer=Timmer,Memory=Memory,
         vgs = vgs, ves = ves, BLUP = BLUP, BLUP_Plus_Mean = BLUP_Plus_Mean,
-        PEV = PEV, BLUE=BLUE, logLM = logLM))
+        PEV = PEV, BLUE=BLUE, logLM = logLM,effect.snp=effect.est,effect.cv=beta.cv))
 
-#print("GAPIT.EMMAxP3D accomplished successfully!")
 }#end of GAPIT.EMMAxP3D function
-
-
-
-
-
+#=============================================================================================

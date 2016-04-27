@@ -6,9 +6,8 @@ function(KW,KO,KWO,GAU,UW){
 # Last update: Oct 22, 2015  by Jiabo Wang
 ##############################################################################################
 #print(length(UW))
-UO=try(t(KWO)%*%solve(KW)%*%UW)
+UO=try(t(KWO)%*%solve(KW)%*%UW,silent=TRUE)
 if(inherits(UO, "try-error")) UO=t(KWO)%*%ginv(KW)%*%UW
-
 n=ncol(UW) #get number of columns, add additional for individual name
 
 BLUP=data.frame(as.matrix(GAU[,1:4]))
@@ -26,7 +25,7 @@ all=all.W
 
 BLUP.O=BLUP[which(GAU[,3]==2),]
 O_BLUP=BLUP.O[order(as.numeric(as.matrix(BLUP.O[,4]))),]
-print(dim(O_BLUP))
+#print(dim(O_BLUP))
 if(nrow(O_BLUP)>0){
 
 ID.O=as.numeric(as.matrix(O_BLUP[,4]))
@@ -39,7 +38,8 @@ all=rbind(all.W,all.O)
 
 colnames(all)=c("Taxa", "Group", "RefInf","ID","BLUP","PEV")
 
-#print("GAPIT.GS accomplished successfully!")
+print("GAPIT.GS accomplished successfully!")
 return(list(BLUP=all))
 }#The function GAPIT.GS ends here
+#=============================================================================================
 

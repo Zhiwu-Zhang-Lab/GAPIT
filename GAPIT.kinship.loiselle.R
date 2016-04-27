@@ -4,7 +4,6 @@ function(snps, method="additive", use="all") {
 # Authors: Alex Lipka and Hyun Min Kang
 # Last update: May 31, 2011 
 ############################################################################################## 
- 
   #Number of SNP types that are 0s
   n0 <- sum(snps==0,na.rm=TRUE)
   #Number of heterozygote SNP types
@@ -92,4 +91,5 @@ function(snps, method="additive", use="all") {
   }
   return(K)
 }
+#=============================================================================================
 

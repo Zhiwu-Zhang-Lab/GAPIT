@@ -8,7 +8,6 @@ function(file.path=NULL,file.from=NULL, file.to=NULL,file.total=NULL,file.G=NULL
 #Authors: Alex Lipka and Zhiwu Zhang
 # Last update: August 18, 2011
 ##############################################################################################
-
 #print("Fragmental reading...")
 genoFormat="hapmap"
 if(!is.null(file.GD)&is.null(file.G)) genoFormat="EMMA"
@@ -138,4 +137,5 @@ if(genoFormat=="EMMA"){
     } # end of the "EMMA"
 #print("fragment ended succesfully!")
 }#End of fragment
+#=============================================================================================
 

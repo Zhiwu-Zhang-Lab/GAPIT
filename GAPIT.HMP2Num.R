@@ -47,4 +47,5 @@ close.connection(fileHMPCon)
 
 #print("GAPIT.HMP2Num accomplished successfully!")
 }   #GAPIT.HMP2Num ends here
+#=============================================================================================
 

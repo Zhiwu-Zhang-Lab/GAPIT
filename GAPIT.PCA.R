@@ -1,24 +1,32 @@
 `GAPIT.PCA` <-
-function(X,taxa, PC.number = min(ncol(X),nrow(X)),file.output=TRUE){
+function(X,taxa, PC.number = min(ncol(X),nrow(X)),file.output=TRUE,PCA.total=0){
 # Object: Conduct a principal component analysis, and output the prinicpal components into the workspace,
 #         a text file of the principal components, and a pdf of the scree plot
 # Authors: Alex Lipka and Hyun Min Kang
 # Last update: May 31, 2011 
 ############################################################################################## 
-
 #Conduct the PCA 
 print("Calling prcomp...")
 PCA.X <- prcomp(X)
+eigenvalues <- PCA.X$sdev^2
+evp=eigenvalues/sum(eigenvalues)
+nout=min(10,length(evp))
+xout=1:nout
 
 print("Creating PCA graphs...")
 #Create a Scree plot 
 if(file.output & PC.number>1) {
 pdf("GAPIT.PCA.eigenValue.pdf", width = 12, height = 12)
-par(mar = c(5,5,5,5))
-screeplot(PCA.X, type="lines")
+  par(mar=c(5,5,4,5)+.1,cex=2)
+  #par(mar=c(10,9,9,10)+.1)
+  plot(xout,eigenvalues[xout],type="b",col="blue",xlab="Principal components",ylab="Variance")
+  par(new=TRUE)
+  plot(xout,evp[xout],type="n",col="red",xaxt="n",yaxt="n",xlab="",ylab="")
+  axis(4)
+  mtext("Percentage",side=4,line=3,cex=2)
 dev.off()
 
-pdf("GAPIT.PCA.pdf", width = 8, height = 8)
+pdf("GAPIT.PCA.2D.pdf", width = 8, height = 8)
 par(mar = c(5,5,5,5))
 maxPlot=min(as.numeric(PC.number[1]),3)
 
@@ -47,11 +55,11 @@ PCs <- cbind(taxa,as.data.frame(PCA.X$x))
 #PCs.unique <- unique(PCs[,1])
 #PCs <-PCs[match(PCs.unique, PCs[,1], nomatch = 0), ]
 
-eigenvalues <- PCA.X$sdev^2
+
 
 print("Exporting PCs...")
 #Write the PCs into a text file
-if(file.output) write.table(PCs, "GAPIT.PCA.csv", quote = FALSE, sep = ",", row.names = FALSE,col.names = TRUE)
+if(file.output) write.table(PCs[,1:(PCA.total+1)], "GAPIT.PCA.csv", quote = FALSE, sep = ",", row.names = FALSE,col.names = TRUE)
 
 if(file.output) write.table(PCA.X$rotation[,1:PC.number], "GAPIT.PCA.loadings.csv", quote = FALSE, sep = ",", row.names = FALSE,col.names = TRUE)
 
@@ -60,3 +68,5 @@ if(file.output) write.table(eigenvalues, "GAPIT.PCA.eigenvalues.csv", quote = FA
 #Return the PCs
 return(list(PCs=PCs,EV=PCA.X$sdev^2,nPCs=NULL))
 }
+#=============================================================================================
+

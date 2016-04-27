@@ -1,13 +1,12 @@
 `GAPIT.Manhattan` <-
 function(GI.MP = NULL, name.of.trait = "Trait",plot.type = "Genomewise",
-DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="Beach"){
+DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="Oceanic"){
     #Object: Make a Manhattan Plot
     #Options for plot.type = "Separate_Graph_for_Each_Chromosome" and "Same_Graph_for_Each_Chromosome"
     #Output: A pdf of the Manhattan Plot
     #Authors: Alex Lipka, Zhiwu Zhang, and Meng Li
     # Last update: May 10, 2011
     ##############################################################################################
-    
     #print("Manhattan ploting...")
     
     #print(seqQTN)
@@ -20,7 +19,15 @@ DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="Beach"){
     
     
     #seqQTN=c(300,1000,2500)
-    
+  #Handler of lable paosition only indicated by negatie position
+  position.only=F
+    if(!is.null(seqQTN)){
+      if(seqQTN[1]<0){
+        seqQTN=-seqQTN
+        position.only=T
+      }
+      
+    }
     borrowSlot=4
     GI.MP[,borrowSlot]=0 #Inicial as 0
     if(!is.null(seqQTN))GI.MP[seqQTN,borrowSlot]=1
@@ -33,7 +40,7 @@ DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="Beach"){
     GI.MP <- GI.MP[!is.na(GI.MP[,2]),]
     GI.MP <- GI.MP[!is.na(GI.MP[,3]),]
     
-    #Remove all SNPs that have P values between 0 and 1 (not na etc)
+    #Retain SNPs that have P values between 0 and 1 (not na etc)
     GI.MP <- GI.MP[GI.MP[,3]>0,]
     GI.MP <- GI.MP[GI.MP[,3]<=1,]
     
@@ -123,21 +130,27 @@ DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="Beach"){
         thecolor=cycle1
         for(i in 2:ncycle){thecolor=c(thecolor,cycle1+(i-1))}
       	col.Rainbow=rainbow(ncolor+1)[thecolor]     	
-     	col.FarmCPU=rep(c("#CC6600","deepskyblue","orange","forestgreen","indianred3"),ceiling(numCHR/5))
-    	col.Rushville=rep(c("orangered","navyblue"),ceiling(numCHR/2))   	
-		col.Congress=rep(c("deepskyblue3","firebrick"),ceiling(numCHR/2))
- 		col.Ocean=rep(c("steelblue4","cyan3"),ceiling(numCHR/2)) 		
- 		col.PLINK=rep(c("gray10","gray70"),ceiling(numCHR/2)) 		
-  		col.Beach=rep(c("turquoise4","indianred3","darkolivegreen3","red","aquamarine3","darkgoldenrod"),ceiling(numCHR/5))
- 	
+     	  col.FarmCPU=rep(c("#CC6600","deepskyblue","orange","forestgreen","indianred3"),ceiling(numCHR/5))
+    	  col.Rushville=rep(c("orangered","navyblue"),ceiling(numCHR/2))   	
+		    col.Congress=rep(c("deepskyblue3","firebrick"),ceiling(numCHR/2))
+ 		    col.Ocean=rep(c("steelblue4","cyan3"),ceiling(numCHR/2)) 		
+ 		    col.PLINK=rep(c("gray10","gray70"),ceiling(numCHR/2)) 		
+ 		    col.Beach=rep(c("turquoise4","indianred3","darkolivegreen3","red","aquamarine3","darkgoldenrod"),ceiling(numCHR/5))
+ 		    #col.Oceanic=rep(c(	'#EC5f67',	'#F99157',	'#FAC863',	'#99C794',	'#5FB3B3',	'#6699CC',	'#C594C5',	'#AB7967'),ceiling(numCHR/8))
+ 		    #col.Oceanic=rep(c(	'#EC5f67',		'#FAC863',	'#99C794',		'#6699CC',	'#C594C5',	'#AB7967'),ceiling(numCHR/6))
+ 		    col.Oceanic=rep(c(	'#EC5f67',		'#FAC863',	'#99C794',		'#6699CC',	'#C594C5'),ceiling(numCHR/5))
+ 		    col.cougars=rep(c(	'#990000',		'dimgray'),ceiling(numCHR/2))
+ 		
         if(plot.style=="Rainbow")plot.color= col.Rainbow
         if(plot.style =="FarmCPU")plot.color= col.FarmCPU
         if(plot.style =="Rushville")plot.color= col.Rushville
         if(plot.style =="Congress")plot.color= col.Congress
         if(plot.style =="Ocean")plot.color= col.Ocean
         if(plot.style =="PLINK")plot.color= col.PLINK
-        if(plot.style =="Beach")plot.color= col.Beach
-        
+ 		    if(plot.style =="Beach")plot.color= col.Beach
+ 		    if(plot.style =="Oceanic")plot.color= col.Oceanic
+ 		    if(plot.style =="cougars")plot.color= col.cougars
+ 		
 		#FarmCPU uses filled dots
     	mypch=1
     	if(plot.style =="FarmCPU")mypch=20
@@ -172,34 +185,45 @@ DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="Beach"){
         position=order(y0,decreasing = TRUE)
         index0=GAPIT.Pruning(y0[position],DPP=DPP)
         index=position[index0]
+        
         x=x0[index]
         y=y0[index]
         z=z0[index]
-        
+
         #Extract QTN
         QTN=GI.MP[which(GI.MP[,borrowSlot]==1),]
         
         #Draw circles with same size and different thikness
-        size=1
-        ratio=5
-        base=1
+        size=1 #1
+        ratio=10 #5
+        base=1 #1
         themax=ceiling(max(y))
         themin=floor(min(y))
         wd=((y-themin+base)/(themax-themin+base))*size*ratio
         s=size-wd/ratio/2
         
         #print("Manhattan XY created")
-       
-            pdf(paste("GAPIT.", name.of.trait,".Manhattan.Plot.Genomewise.pdf" ,sep = ""), width = 13,height=5.75)
+       ####xiaolei update on 2016/01/09 
+        if(plot.style =="FarmCPU"){
+	    pdf(paste("FarmCPU.", name.of.trait,".Manhattan.Plot.Genomewise.pdf" ,sep = ""), width = 13,height=5.75)
+        }else{
+	    pdf(paste("GAPIT.", name.of.trait,".Manhattan.Plot.Genomewise.pdf" ,sep = ""), width = 13,height=5.75)
+        }
             par(mar = c(3,6,5,1))
         	plot(y~x,xlab="",ylab=expression(-log[10](italic(p))) ,
         	cex.axis=1.5, cex.lab=2, ,col=plot.color[z],axes=FALSE,type = "p",pch=mypch,lwd=wd,cex=s+.3,main = paste(name.of.trait,sep=" 			"),cex.main=2.5)
         
         #Label QTN positions
         if(is.vector(QTN)){
-            abline(v=QTN[2], lty = 2, lwd=1.5, col = "grey")
+          if(position.only){abline(v=QTN[2], lty = 2, lwd=1.5, col = "grey")}else{
+          points(QTN[2], QTN[3], type="p",pch=21, cex=2,lwd=1.5,col="dimgrey")
+          points(QTN[2], QTN[3], type="p",pch=20, cex=1,lwd=1.5,col="dimgrey")
+          }
         }else{
-            abline(v=QTN[,2], lty = 2, lwd=1.5, col = "grey")
+          if(position.only){abline(v=QTN[,2], lty = 2, lwd=1.5, col = "grey")}else{
+          points(QTN[,2], QTN[,3], type="p",pch=21, cex=2,lwd=1.5,col="dimgrey")
+          points(QTN[,2], QTN[,3], type="p",pch=20, cex=1,lwd=1.5,col="dimgrey")
+          }
         }
         
         #Add a horizontal line for bonferroniCutOff
@@ -218,3 +242,4 @@ DPP=50000,cutOff=0.01,band=5,seqQTN=NULL,plot.style="Beach"){
     
     #print("GAPIT.Manhattan accomplished successfully!zw")
 } #end of GAPIT.Manhattan
+#=============================================================================================

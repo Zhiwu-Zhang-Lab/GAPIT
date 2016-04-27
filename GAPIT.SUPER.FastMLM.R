@@ -292,4 +292,5 @@ return(list(beta=betavalue, ps = ps, stats = stats, dfs = dfs,effect=betavalue))
 } #Enf of FastMLM
 
 }####end function
+#=============================================================================================
 

@@ -6,7 +6,6 @@ function(P.values, plot.type = "log_P_values", name.of.trait = "Trait",DPP=50000
     #Authors: Alex Lipka and Zhiwu Zhang
     # Last update: May 9, 2011
     ##############################################################################################
-    
     # Sort the data by the raw P-values
     #print("Sorting p values")
     #print(paste("Number of P values: ",length(P.values)))
@@ -63,7 +62,7 @@ function(P.values, plot.type = "log_P_values", name.of.trait = "Trait",DPP=50000
         #CI shade
         plot(NULL, xlim = c(0,max(log.Quantiles)), ylim = c(0,max(log.P.values)), type="l",lty=5, lwd = 2, axes=FALSE, xlab="", ylab="",col="gray")
         index=length(c95):1
-        polygon(c(log.Quantiles[index],log.Quantiles),c(-log10(c05)[index],-log10(c95)),col='gray')
+        polygon(c(log.Quantiles[index],log.Quantiles),c(-log10(c05)[index],-log10(c95)),col='gray',border=NA)
         
         #Diagonal line
         abline(a = 0, b = 1, col = "red",lwd=2)
@@ -93,5 +92,6 @@ function(P.values, plot.type = "log_P_values", name.of.trait = "Trait",DPP=50000
         dev.off()   
     }
     #print("GAPIT.QQ  accomplished successfully!")
-    
 }
+#=============================================================================================
+

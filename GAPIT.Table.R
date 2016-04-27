@@ -18,4 +18,5 @@ write.table(final.table, paste("GAPIT.", name.of.trait, ".GWAS.Results.csv", sep
   
 
 }   #GAPIT.Table ends here
+#=============================================================================================
 

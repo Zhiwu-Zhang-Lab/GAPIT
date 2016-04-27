@@ -5,7 +5,6 @@ function(KI,kinship.cluster = "average",kinship.group = "Mean",GN=nrow(KI),Timme
 #Authors: Alex Lipka and Zhiwu Zhang 
 # Last update: April 14, 2011 
 ##############################################################################################
-
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="CP start") 
 Memory=GAPIT.Memory(Memory=Memory,Infor="cp start")
 
@@ -34,14 +33,17 @@ Memory=GAPIT.Memory(Memory=Memory,Infor="cp distance")
 
 # hclust() will perform the hiearchical cluster analysis
 #cluster.distance.matrix <- hclust(distance.matrix.as.dist, method = kinship.cluster)
-cluster.distance.matrix <- hclust(as.dist(2 - KI), method = kinship.cluster)
-
+#cluster.distance.matrix <- hclust(as.dist(2 - KI), method = kinship.cluster)
+distance.matrix=dist(KI,upper=TRUE) #Jiabo Wang modified ,the dist is right function for cluster
+cluster.distance.matrix=hclust(distance.matrix,method=kinship.cluster)
+#cutree(out_hclust,k=3)
 
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="CP cluster") 
 Memory=GAPIT.Memory(Memory=Memory,Infor="cp cluster")
 
 # Cutree will assign lines into k clusters
-group.membership <- cutree(cluster.distance.matrix, k = GN) 
+group.membership <- cutree(cluster.distance.matrix, k = GN)
+compress_z=table(group.membership,paste(line.names))  #build compress z with group.membership
 
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="CP cutree") 
 Memory=GAPIT.Memory(Memory=Memory,Infor="cp cutree")
@@ -109,4 +111,5 @@ GA <- data.frame(cbind(as.character(line.names),as.numeric(group.membership) ))
 #print("GAPIT.Compress accomplished successfully!")
 return(list(GA=GA, KG=KG,Timmer=Timmer,Memory=Memory))
 }#The function GAPIT.Compress ends here
+#=============================================================================================
 

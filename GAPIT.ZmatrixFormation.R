@@ -5,7 +5,6 @@ function(Z,Y){
 #Authors: Zhiwu Zhang 
 # Last update: April 22, 2011 
 ##############################################################################################
-
 #split individuals in Y to the ones that are given Z and the one not
 taxa.Z=as.matrix(Z[-1,1])
 taxa.Y=as.matrix(Y[,1])
@@ -36,4 +35,5 @@ Z=data.frame(cbind(label.row,dataPart))
 #print("GAPIT.ZmatrixFormation accomplished successfully!")
 return(Z)
 }#The function GAPIT.ZmatrixFormation ends here
+#=============================================================================================
 

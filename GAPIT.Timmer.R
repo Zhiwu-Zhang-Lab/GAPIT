@@ -5,7 +5,6 @@ function(Timmer=NULL,Infor){
 #Authors: Zhiwu Zhang
 # Last update: may 8, 2011 
 ##############################################################################################
-
 Time<- Sys.time()
 if(is.null(Timmer)) {
 Elapsed=0
@@ -19,5 +18,6 @@ Timmer[nrow(Timmer),3]=as.numeric(as.matrix(Timmer[nrow(Timmer),2]))-as.numeric(
 
 #print(paste('Time used: ', Timmer[nrow(Timmer),3], ' seconds for ',Infor,sep="" )) 
 return (Timmer)
-}#end of GAPIT.EMMAxP3D function
+}#end of GAPIT.Timmer function
+#=============================================================================================
 

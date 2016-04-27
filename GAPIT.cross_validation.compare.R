@@ -6,8 +6,7 @@
 # tc:comparation folds number and value
 # Authors: You Tang,Jiabo Wang and You Zhou
 # Last update: December 31, 2014 
-############################################################################################## 
-
+##############################################################################################
 if(is.null(myGD)||is.null(y)){stop("Validation Invalid. Please select read valid flies !")}
 if(is.null(rel))
   {
@@ -272,3 +271,4 @@ dev.off()
 print(paste("GAPIT.cross validation ", name.of.trait,".compare to different folders.","successfully!" ,sep = ""))
 return(list(allstorage.inf))
 }#end GAPIT.cross validation compare to different folders by replicate Times
+#=============================================================================================

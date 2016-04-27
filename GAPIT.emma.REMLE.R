@@ -4,9 +4,7 @@ function(y, X, K, Z=NULL, ngrids=100, llim=-10, ulim=10,
 # Authors: Hyun Min Kang
 # Modified (only one line) by Zhiwu Zhang to handle non-defined LL ("NaN") by replacing it with the worst LL.
 # Last update: June 8, 2011 
-################################################################################################################
-
-
+##############################################################################################
   n <- length(y)
   t <- nrow(K)
   q <- ncol(X)
@@ -111,4 +109,5 @@ function(y, X, K, Z=NULL, ngrids=100, llim=-10, ulim=10,
 
   return (list(REML=maxLL,delta=maxdelta,ve=maxve,vg=maxva))
 }
+#=============================================================================================
 

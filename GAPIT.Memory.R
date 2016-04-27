@@ -20,4 +20,5 @@ Memory[nrow(Memory),3]=as.numeric(as.matrix(Memory[nrow(Memory),2]))-as.numeric(
 
 return (Memory)
 }#end of GAPIT.Memory function
+#=============================================================================================
 

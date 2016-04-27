@@ -63,3 +63,4 @@ if(MAF.calculate){
     myMAF=GAPIT.MAF(MAF=MAF,P=GWAS[,4],E=NULL,trait=name.of.trait,threshold.output=threshold.output,plot.style=plot.style)}
 #print("Report accomplished" )
 }#The function GAPIT.Report ends here
+#=============================================================================================

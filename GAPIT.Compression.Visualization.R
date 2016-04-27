@@ -6,10 +6,9 @@ function(Compression = Compression, name.of.trait = name.of.trait){
 #Authors: Alex Lipka and Zhiwu Zhang 
 # Last update: May 10, 2011 
 ##############################################################################################
-
 #Graph the optimum compression 
 
-#print("Compression")
+print("GAPIT.Compression.Visualization")
 #print(Compression)
 
 if(length(Compression)<=6) Compression=t(as.matrix(Compression[which(Compression[,4]!="NULL" | Compression[,4]!="NaN"),]))
@@ -19,8 +18,6 @@ if(length(Compression)==6) Compression=matrix(Compression,1,6)
 #print(length(Compression) )
 
 if(length(Compression)>6) Compression=Compression[which(Compression[,4]!="NULL" | Compression[,4]!="NaN"),]
-
-#print("Checking")
 if(length(Compression)<1) return() #no result
 
 #Pie chart for the optimum setting
@@ -29,23 +26,32 @@ print("Pie chart")
 LL=as.numeric(Compression[,4])
 Compression.best=Compression[1,] 
 variance=as.numeric(Compression.best[5:6])
-colors <- c("grey50","grey70")
-labels0 <- round(variance/sum(variance) * 100, 1)
+#colors <- c("grey50","grey70")
+colors <- c("#990000","dimgray")
+varp=variance/sum(variance)
+h2.opt= varp[1]
+
+labels0 <- round(varp * 100, 1)
 labels <- paste(labels0, "%", sep="")
+
+legend0=c("Genetic: ","Residual: ")
+legend <- paste(legend0, round(variance*100)/100, sep="")
+
 LL.best0=as.numeric(Compression.best[4]  )
-LL.best=floor(LL.best0*100)/100
-theOptimum=paste(c(Compression.best[c(1:3)],LL.best) )
+LL.best=paste("-2LL: ",floor(LL.best0*100)/100,sep="")
+label.comp=paste(c("Cluster method: ","Group method: ","Group number: "), Compression.best[c(1:3)], sep="")
+theOptimum=c(label.comp,LL.best) 
 
 pdf(paste("GAPIT.", name.of.trait,".Optimum.pdf", sep = ""), width = 14)
 par(mfrow = c(1,1), mar = c(1,1,5,5), lab = c(5,5,7))
-pie(variance,  col=colors, labels=labels,angle=45)
-legend(1.0, 0.5, c("Genetic variance","Residual variance"), cex=1.5, 
+pie(variance,  col=colors, labels=labels,angle=45,border=NA)
+legend(1.0, 0.5, legend, cex=1.5, bty="n",
    fill=colors)
 
 #Display the optimum compression
-text(1.5,.0, "The optimum compression", col= "red")
+text(1.5,.0, "The optimum compression", col= "gray10")
 for(i in 1:4){
-text(1.5,-.1*i, theOptimum[i], col= "red")
+text(1.5,-.1*i, theOptimum[i], col= "gray10")
 }
 dev.off() 
 
@@ -293,5 +299,9 @@ dev.off()
 
 print("GAPIT.Compression.Visualization accomplished successfully!")
 
+#return(list(compression=Compression.h2,h2=h2.opt))
+return
+
 }#GAPIT.Compression.Plots ends here
+#=============================================================================================
 

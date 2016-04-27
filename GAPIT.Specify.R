@@ -55,13 +55,14 @@ function(GI=NULL,GP=NULL,bin.size=10000000,inclosure.size=NULL,MaxBP=1e10){
     
     index=!is.na(ID.GP[,4])
     ID.GP=ID.GP[index,4] #must have chr and bp information, keep SNP ID only
-    
+    num_bins=NULL
     if(!is.null(inclosure.size)   ) {
         if(!is.na(inclosure.size)){
             avaiable=min(inclosure.size,length(ID.GP))
             #print("inclosure.size length(ID.GP) avaiable")
             #print(inclosure.size)
             #print(length(ID.GP))
+			num_bins=length(ID.GP)   # create number of all bins
             #print(avaiable)
             if(avaiable==0){
                 ID.GP=-1
@@ -84,7 +85,9 @@ function(GI=NULL,GP=NULL,bin.size=10000000,inclosure.size=NULL,MaxBP=1e10){
     }
     #print("Specification in process done")
     myList=list(index=theIndex,CB=ID.GP)
-    #print("debug in specify on list")
-    return (list(index=theIndex,CB=ID.GP))
+
+    return (list(index=theIndex,CB=ID.GP,num_bins=num_bins))
 } #end of GAPIT.Specify
+#=============================================================================================
+
 

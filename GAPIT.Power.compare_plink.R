@@ -378,4 +378,5 @@ dev.off()
 print(paste("GAPIT.Power ", name.of.trait,".compare to GLM,MLM,CMLM,ECMLM,SUPER,PLINK.","successfully!" ,sep = ""))
 #return(list(inf_Y_all,ref_Y_all))
 }#end compare to GLM,MLM,SUPER
+#=============================================================================================
 

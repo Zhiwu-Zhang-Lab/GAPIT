@@ -1,6 +1,6 @@
 `GAPIT.0000` <-
 function(){
-################################################################################
+##############################################################################################
 #GAPIT: Genome Association and Prediction Integrated Tool
 #Objective 1: State of art methods for high  power, accuracy and speed;
 #Objective 2: User friendly by design, help documents, and web forum;
@@ -24,9 +24,8 @@ function(){
 #Authors: Alex Lipka, Feng Tian, Qishan Wang, Xiaolei Liu, Meng Li,You Tang and Zhiwu Zhang
 #Citation: Lipka AE, Tian F, Wang Q, Peiffer J, Li M, Bradbury PJ, Gore MA, Buckler ES, and Zhang Z 
 #GAPIT: genome association and prediction integrated tool. Bioinformatics 2012, 28:2397-2399.
-GAPIT.Version="2015.11.03 (GAPIT.Genotype, You Tang and GAPIT.Main jiabo), http://zzlab.net/GAPIT"
+GAPIT.Version="2016.03.01 (Kinship defined by Zhiwu Zhang), http://zzlab.net/GAPIT"
 return(GAPIT.Version)
 }
-
-################################################################################
+#=============================================================================================
 

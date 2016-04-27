@@ -6,6 +6,10 @@ function(Z,GAU){
 # Last update: April 14, 2011 
 ##############################################################################################
 #Extraction of GAU coresponding to Z, sort GAU rowwise to mach columns of Z, and make design matrix
+print("GAPIT.ZmatrixCompress")
+#print(dim(Z))
+#print(dim(GAU))
+
 effect.Z=as.matrix(Z[1,-1])
 effect.GAU=as.matrix(GAU[,1])
 taxa=as.data.frame(Z[-1,1])
@@ -18,7 +22,7 @@ id.1=GAU1[which(GAU1[,3]<2),4]
 n=max(as.numeric(as.vector(id.1)))
 x=as.numeric(as.matrix(GAU1[,4]))
 DS=diag(n)[x,]
-#@@@@
+
 #sort Z column wise
 order.Z=order(effect.Z)
 Z=Z[-1,-1]
@@ -40,4 +44,5 @@ Z=Z[order(as.matrix(taxa)),]
 #print("GAPIT.ZmatrixCompress accomplished successfully!")
 return(list(Z=Z))
 }#The function GAPIT.ZmatrixCompress ends here
+#=============================================================================================
 

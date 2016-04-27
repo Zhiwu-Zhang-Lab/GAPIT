@@ -1,11 +1,11 @@
-`GAPIT.Phenotype.View` <-function(myY=NULL){
+`GAPIT.Phenotype.View` <-function(myY=NULL,traitname="_",memo="_"){
 # Object: Analysis for Phenotype data:Distribution of density,Accumulation,result:a pdf of the scree plot
 # myY:Phenotype data
 
 # Authors: You Tang
 # Last update: Sep 7, 2015 
 ############################################################################################## 
-
+print("GAPIT.Phenotype.View in press...")
 if(is.null(myY)){stop("Validation Invalid. Please select read valid Phenotype flies  !")}
 
 y<-myY[!is.na(myY[,2]),2]
@@ -13,7 +13,7 @@ obs<-as.matrix(y)
 
 traitname=colnames(myY)[2]
 
-pdf(paste("phnotype view_",traitname,".pdf",seq=""), width =10, height = 6)
+pdf(paste("GAPIT",memo,traitname,"phnotype_view.pdf",sep ="."), width =10, height = 6)
 par(mar = c(5,5,5,5))
 
 par(mfrow=c(2,2))
@@ -30,3 +30,4 @@ print(paste("GAPIT.Phenotype.View ", ".output pdf generate.","successfully!" ,se
 
 #GAPIT.Phenotype.View
 }
+#=============================================================================================

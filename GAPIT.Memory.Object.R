@@ -5,8 +5,7 @@ function(name.of.trait="Trait"){
 # http://heuristically.wordpress.com/2010/01/04/r-memory-usage-statistics-variable/
 # Modified by Zhiwu Zhang
 # Last update: may 29, 2011 
-##############################################################################################
-  
+############################################################################################## 
 # print aggregate memory usage statistics 
 print(paste('R is using', memory.size(), 'MB out of limit', memory.limit(), 'MB')) 
   
@@ -35,4 +34,5 @@ dotchart(object.sizes(), main="Memory usage by object", xlab="Bytes")
 pie(object.sizes(), main="Memory usage by object")
 dev.off()  
 }
+#=============================================================================================
 

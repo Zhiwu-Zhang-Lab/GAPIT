@@ -8,7 +8,6 @@ function(PCs=NULL,EV=NULL,nPCs=0 ){
 #Authors: Huihui Li and Zhiwu Zhang
 #Last update: April 17, 2012
 ##############################################################################################
-
 print("Calling GAPIT.kinship.separation")  
   Total.number.PCs=ncol(PCs)
   n=nrow(PCs)
@@ -44,4 +43,5 @@ print(n)
 print("GAPIT.kinship.separation called succesfuly")
   return (K)
 }
+#=============================================================================================
 

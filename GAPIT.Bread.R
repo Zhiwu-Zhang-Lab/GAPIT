@@ -11,7 +11,7 @@ function(Y=NULL,CV=NULL,Z=NULL,KI=NULL,GK=NULL,GD=NULL,GM=NULL,
 #GD: same as GK. This is the genotype to screen, the columns are taxa,SNP1,SNP2,...
 #GK: Genotype data in numerical format, taxa goes to row and snp go ti columns. the first column is taxa
 #GM: Genotype map with columns of snpID,chromosome and position
-#method: Options are GLM, MLM, CMLM, FaST, SUPER and DC 
+#method: Options are GLM, MLM, CMLM, FaST, SUPER ,FARM-CPU and DC 
 #Authors: Zhiwu Zhang
 #Last update: November 2, 2011
 ##############################################################################################
@@ -114,7 +114,34 @@ mySUPERFaST=GAPIT.SUPER.FastMLM(ys=matrix(Y[,-1],nrow(Y),1),X0=as.matrix(cbind(m
 GWAS=cbind(GM,mySUPERFaST$ps,mySUPERFaST$stats,mySUPERFaST$dfs,mySUPERFaST$effect)
 }#End of if(method=="FaST" | method=="SUPER")
 
+
+
+
+
+
+if(method=="FARM-CPU")
+{
+myFarmCPU=FarmCPU(
+Y=Y,#Phenotype
+GD=GD,#Genotype
+GM=GM,#Map information
+CV=CV[,2:ncol(CV)],
+file.output=TRUE
+)
+
+
+GWAS=myFarmCPU$GWAS
+GPS=myFarmCPU$Pred
+h2=NULL
+vg=NULL
+ve=NULL
+delta=NULL
+REMLs=NULL
+}
+
+
 #print("GAPIT.Bread succeed!")  
 return (list(GWAS=GWAS, GPS=GPS,REMLs=REMLs,vg=vg,ve=ve,delta=delta))
 } #end of GAPIT.Bread
+#=============================================================================================
 

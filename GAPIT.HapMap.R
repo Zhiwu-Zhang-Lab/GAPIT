@@ -5,7 +5,6 @@ function(G,SNP.effect="Add",SNP.impute="Middle",heading=TRUE, Create.indicator =
 #Authors: Feng Tian and Zhiwu Zhang
 # Last update: May 30, 2011 
 ##############################################################################################
-
 print(paste("Converting HapMap format to numerical under model of ", SNP.impute,sep=""))
 #gc()
 #GAPIT.Memory.Object(name.of.trait="HapMap.Start")
@@ -52,4 +51,5 @@ if(is.null(GD)){
 if(!Create.indicator) {print(paste("Succesfuly finished converting HapMap which has bits of ", bit,sep="")) }
 return(list(GT=GT,GD=GD,GI=GI))
 }#end of GAPIT.HapMap function
+#=============================================================================================
 

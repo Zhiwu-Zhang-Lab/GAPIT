@@ -5,7 +5,6 @@ function(xs, SNP.impute = "Major" ){
 #Authors: Alex Lipka and Zhiwu Zhang
 # Last update: April 30, 2012
 ##############################################################################################
-
 #Determine the number of bits of the genotype
 
 bit=nchar(as.character(xs[1]))
@@ -62,10 +61,7 @@ for(i in unique.sorted){
 
 return(x.ind)
 
-#print("GAPIT.EMMAxP3D accomplished successfully!")
-}#end of GAPIT.EMMAxP3D function
-
-
-
-
+print("GAPIT.Create.Indicator accomplished successfully!")
+}#end of GAPIT.Create.Indicator function
+#=============================================================================================
 

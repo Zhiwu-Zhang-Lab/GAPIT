@@ -4,6 +4,7 @@
  #intput: beta-power and alpha-fdr or type I error
  #Authors: Zhiwu Zhang
  #Last update: December 18, 2015
+##############################################################################################
 GAPIT.AUC=function(beta=NULL,alpha=NULL){
 	n=length(beta)
 	#plot(alpha,beta,type="b")
@@ -13,3 +14,4 @@ GAPIT.AUC=function(beta=NULL,alpha=NULL){
 	AUC=sum(ab)
 	return(AUC)
 }
+#=============================================================================================

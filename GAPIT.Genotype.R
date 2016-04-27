@@ -385,7 +385,7 @@ Memory=GAPIT.Memory(Memory=Memory,Infor="Before PCA")
 PC=NULL
 thePCA=NULL
 if(PCA.total>0 | kinship.algorithm=="Separation"){
-thePCA=GAPIT.PCA(X = GD, taxa = GT, PC.number = PCA.total,file.output=file.output)
+thePCA=GAPIT.PCA(X = GD, taxa = GT, PC.number = PCA.total,file.output=file.output,PCA.total=PCA.total)
 PC=thePCA$PCs[,1:(1+PCA.total)]
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="PCA")
 Memory=GAPIT.Memory(Memory=Memory,Infor="PCA")
@@ -428,7 +428,8 @@ if(is.null(KI) & (!is.null(GD) |!is.null(GK)) & kinship.algorithm!="SUPER")
     theKin= emma.kinship(snps=t(as.matrix(.5*thisGD)), method="additive", use="all")
   }  
   if(kinship.algorithm=="Loiselle")theKin= GAPIT.kinship.loiselle(snps=t(as.matrix(.5*thisGD)), method="additive", use="all")
-  if(kinship.algorithm=="VanRaden")theKin= GAPIT.kinship.VanRaden(snps=as.matrix(thisGD))
+  if(kinship.algorithm=="VanRaden")theKin= GAPIT.kinship.VanRaden(snps=as.matrix(thisGD)) 
+  if(kinship.algorithm=="Zhang")theKin= GAPIT.kinship.ZHANG(snps=as.matrix(thisGD)) 
   if(kinship.algorithm=="Separation")theKin= GAPIT.kinship.separation(PCs=thePCA$PCs,EV=thePCA$EV,nPCs=PCA.total)
  
 if(!is.null(theKin)){ 
@@ -549,4 +550,5 @@ myGD=GD,
 #print("Genotype successfully acomplished")
 return (list(G=G,GD=GD,GI=GI,GT=GT,hasGenotype=hasGenotype, genoFormat=genoFormat, KI=KI,PC=PC,byFile=byFile,fullGD=fullGD,Timmer=Timmer,Memory=Memory,SNP.QTN=SNP.QTN))
 }
+#=============================================================================================
 

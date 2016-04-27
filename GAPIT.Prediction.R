@@ -6,7 +6,6 @@
 # Authors: Jiabo Wang and You Tang
 # Last update: December 31, 2014 
 ############################################################################################## 
-
 if(is.null(myK)||is.null(y)){stop("Validation Invalid. Please select read valid flies !")}
 if(is.null(num))
   {
@@ -134,4 +133,5 @@ print(paste("GAPIT.Prediction ", name.of.trait,".Predict phenotype.","successful
 return(list(inf_Y_all,ref_Y_all))
 }
 #end Prediction one time
+#=============================================================================================
 

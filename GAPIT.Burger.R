@@ -9,17 +9,8 @@ function(Y=NULL,CV=NULL,GK=NULL){
     #GK: Genotype data in numerical format, taxa goes to row and snp go to columns. the first column is taxa (same as GAPIT.bread)
     #Authors: Xiaolei Liu ,Jiabo Wang and Zhiwu Zhang
     #Last update: November 2, 2015
-    ##############################################################################################
-    
+##############################################################################################
     #print("GAPIT.Burger in progress...")
-    #print("dimension of Y, CV and GK")
-    #print(dim(Y))
-    #print(length(Y))
-    #print(dim(CV))
-    #print(length(CV))
-    #print(dim(GK))
-    #print(length(GK))
-    
     
     if(!is.null(CV)){
         #CV=as.matrix(CV)#change CV to a matrix when it is a vector xiaolei changed here
@@ -39,13 +30,6 @@ theGK=as.matrix(GK[,-1])
 theGK=matrix(GK[,-1],n,1)
 }
 
-#print("debug dimension of Y, CV and GK")
-#print(dim(Y))
-#print(length(Y))
-#print(dim(CV))
-#print(length(CV))
-#print(dim(GK))
-#print(length(GK))
 myFaSTREML=GAPIT.get.LL(pheno=matrix(Y[,-1],nrow(Y),1),geno=NULL,snp.pool=theGK,X0=theCV   )
     REMLs=-2*myFaSTREML$LL
     delta=myFaSTREML$delta
@@ -55,4 +39,5 @@ myFaSTREML=GAPIT.get.LL(pheno=matrix(Y[,-1],nrow(Y),1),geno=NULL,snp.pool=theGK,
     #print("GAPIT.Burger succeed!")
     return (list(REMLs=REMLs,vg=vg,ve=ve,delta=delta))
 } #end of GAPIT.Burger.Bus
+#=============================================================================================
 

@@ -5,9 +5,7 @@ function(PWI = PWI, FDR.Rate = 0.05, FDR.Procedure = "BH"){
 #Authors: Alex Lipka and Zhiwu Zhang 
 # Last update: May 5, 2011 
 ##############################################################################################
-
-
-    #Make sure that your compouter has the latest version of Bioconductor (the "Biobase" package) and multtest
+#Make sure that your compouter has the latest version of Bioconductor (the "Biobase" package) and multtest
 
 if(is.null(PWI))
 {
@@ -54,6 +52,6 @@ if(!is.null(PWI))
 }  
   #return(list(PWIP=PWIP, number.of.significant.SNPs = number.of.significant.SNPs))
   return(list(PWIP=PWIP))
-
-}
+}#GAPIT.Perform.BH.FDR.Multiple.Correction.Procedure ends here
+#=============================================================================================
 

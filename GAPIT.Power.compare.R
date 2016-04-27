@@ -4,7 +4,6 @@
 # Authors: You Tang 
 # Last update: December 31, 2014 
 ############################################################################################## 
-
 if(is.null(myG)||is.null(myGD)||is.null(myGM)||is.null(myKI)){stop("Read data Invalid. Please select read valid flies !")}
 
 if(is.null(rel))
@@ -298,4 +297,5 @@ dev.off()
 print(paste("GAPIT.Power ", name.of.trait,".compare to GLM,MLM,CMLM,ECMLM,SUPER.","successfully!" ,sep = ""))
 #return(list(inf_Y_all,ref_Y_all))
 }#end compare to GLM,MLM,CMLM,ECMLM,SUPER
+#=============================================================================================
 

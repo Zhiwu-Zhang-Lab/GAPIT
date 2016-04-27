@@ -43,4 +43,5 @@ palette("default")      # reset back to the default
 dev.off()
 }
 }   #GAPIT.MAF ends here
+#=============================================================================================
 

@@ -14,13 +14,14 @@ alpha=c(.01,.05,.1,.2,.3,.4,.5,.6,.7,.8,.9,1),MaxBP=1e10){
 # Last update: April 2, 2013
 ##############################################################################################
 #print("GAPIT.Power Started")
-if(is.null(seqQTN) | is.null(GM)) return(list(FDR=NULL,Power=NULL,Power.Alpha=NULL,alpha=NULL))
+if(is.null(seqQTN) | is.null(GM) | is.null(GWAS)) return(list(FDR=NULL,Power=NULL,Power.Alpha=NULL,alpha=NULL))
 
 #-----------------FDR and Power analysis-------------------------
 #Information needed: myGAPIT$GWAS,myGM and QTN(r)
 nWin=matrix(NA,length(WS),1)
 
 format_GWAS=cbind(GWAS[,1:4],NA,NA,NA) 
+
 names(format_GWAS)<-c("SNP","Chromosome","Position","P.value","maf","nobs","FDR_Adjusted_P-values")
 myGM=GM
 
@@ -97,7 +98,7 @@ Power.Alpha[,theWS]=myPower.Alpha
 nOut=min(maxOut,max(nWin))
 index=1:nOut
 return(list(FDR=FDR[index,],Power=Power[index,],Power.Alpha=Power.Alpha,alpha=alpha))
-
-
 }#end of GAPIT.Power
+#=============================================================================================
+
 

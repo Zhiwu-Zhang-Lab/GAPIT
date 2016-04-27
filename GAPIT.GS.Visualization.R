@@ -5,8 +5,6 @@ function(gsBLUP = gsBLUP, BINS=BINS, name.of.trait = name.of.trait){
 #Authors: Zhiwu Zhang 
 # Last update: May 15, 2011 
 ##############################################################################################
-
-
 nBin=BINS
 
 BLUP= gsBLUP[,5]
@@ -71,4 +69,5 @@ if(inherits(BLUP.max, "try-error"))  return()
 #print("GAPIT.GS.Visualization accomplished successfully!")
 
 }   #GAPIT.GS.Visualization ends here
+#=============================================================================================
 

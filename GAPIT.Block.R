@@ -5,7 +5,6 @@ function(Z,GA,KG){
 #Authors: Zhiwu Zhang and Alex Lipka 
 # Last update: April 14, 2011 
 ##############################################################################################
-
 # To separate group kiship into two blocks: with and without phenotype.
 # A group goes to with phenotype as loog as it has one phenotyped individual.
 
@@ -54,8 +53,6 @@ GAU1 <- merge(GAU[order.block,], grpblock, by.x = "X2", by.y = "grp")
 GAU1[,4]=(as.numeric(GAU1[,3])+as.numeric(GAU1[,4]))/2
 #print(GAU1)
 GAU=GAU1[,c(2,1,4,5)]
-#print(GAU)
-#stop("debug")
 KW=KG[grp.1,grp.1]
 KO=KG[grp.2,grp.2]
 KWO=KG[grp.1,grp.2]
@@ -66,4 +63,5 @@ KWO=KG[grp.1,grp.2]
 
 return(list(GAU=GAU,KW=KW,KO=KO,KWO=KWO))
 }#The function GAPIT.Block ends here
+#=============================================================================================
 

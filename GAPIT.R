@@ -16,13 +16,14 @@ function(Y=NULL,G=NULL,GD=NULL,GM=NULL,KI=NULL,Z=NULL,CV=NULL,CV.Inheritance=NUL
         method.GLM="fast.lm",method.sub="reward",method.sub.final="reward",method.bin="static",bin.size=c(1000000),bin.selection=c(10,20,50,100,200,500,1000),
         memo="",Prior=NULL,ncpus=1,maxLoop=3,threshold.output=.01,
         WS=c(1e0,1e3,1e4,1e5,1e6,1e7),alpha=c(.01,.05,.1,.2,.3,.4,.5,.6,.7,.8,.9,1),maxOut=100,QTN.position=NULL,
-        converge=1,iteration.output=FALSE,acceleration=0,iteration.method="accum",PCA.View.output=TRUE,Geno.View.output=TRUE,plot.style="Beach",SUPER_GD=NULL,SUPER_GS=FALSE){
+        converge=1,iteration.output=FALSE,acceleration=0,iteration.method="accum",PCA.View.output=TRUE,Geno.View.output=TRUE,plot.style="Oceanic",SUPER_GD=NULL,SUPER_GS=FALSE){
 #Object: To perform GWAS and GPS (Genomic Prediction/Selection)
 #Designed by Zhiwu Zhang
-#Writen by Alex Lipka, Feng Tian ,You Tang ,Jiabo Wang and Zhiwu Zhang
+#Writen by Alex Lipka, Feng Tian ,You Tang and Zhiwu Zhang
 #Last update: Oct 23, 2015  by Jiabo Wang add REML threshold and SUPER GK
 ##############################################################################################
 print("--------------------- Welcome to GAPIT ----------------------------")
+  
 echo=TRUE
 GAPIT.Version=GAPIT.0000()
 
@@ -33,9 +34,9 @@ Memory=GAPIT.Memory(Infor="GAPIT")
 #First call to genotype to setup genotype data
 
 storage_PCA.total<-PCA.total
-if(PCA.total>0){
-if(PCA.total<=3){PCA.total=4}
-}
+#if(PCA.total>0){
+#if(PCA.total<=3){PCA.total=4}
+#}
 
 #BUS algorithm
 if(kinship.algorithm=="FARM-CPU") return (GAPIT.BUS(Y=Y,GDP=GD,GM=GM,CV=CV,
@@ -101,11 +102,8 @@ for (trait in 2: ncol(Y))  {
 traitname=colnames(Y)[trait]
 
 ###Statistical distributions of phenotype
-if(!is.null(Y) & file.output){
-ViewPhenotype<-GAPIT.Phenotype.View(
-myY=Y[,c(1,trait)]
-)
-}
+if(!is.null(Y) & file.output)ViewPhenotype<-GAPIT.Phenotype.View(myY=Y[,c(1,trait)],traitname=traitname,memo=memo)
+
 
 ###Correlation between phenotype and principal components
 if(!is.null(Y)&!is.null(PC) & file.output & PCA.total>0 & PCA.View.output){
@@ -146,44 +144,43 @@ write.table(Memory, file, quote = FALSE, sep = ",", row.names = FALSE,col.names 
 }
 
 if(ncol(Y)==2) {
-  if (!SUPER_GS){
+
+if (!SUPER_GS){
 #Evaluate Power vs FDR and type I error
-myPower=GAPIT.Power(WS=WS, alpha=alpha, maxOut=maxOut,seqQTN=QTN.position,GM=GM,GWAS=gapitMain$GWAS)
+myPower=NULL
+if(!is.null(gapitMain$GWAS))myPower=GAPIT.Power(WS=WS, alpha=alpha, maxOut=maxOut,seqQTN=QTN.position,GM=GM,GWAS=gapitMain$GWAS)
 
 
 h2= as.matrix(as.numeric(as.vector(gapitMain$Compression[,5]))/(as.numeric(as.vector(gapitMain$Compression[,5]))+as.numeric(as.vector(gapitMain$Compression[,6]))),length(gapitMain$Compression[,6]),1)
 colnames(h2)=c("Heritability")
   print("GAPIT accomplished successfully for single trait. Results are saved. GWAS are returned!")
-  return (list(QTN=gapitMain$QTN,GWAS=gapitMain$GWAS,GPS=gapitMain$GPS,Pred=gapitMain$Pred,compression=as.data.frame(cbind(gapitMain$Compression,h2)), 
+  print("It is OK to see this: 'There were 50 or more warnings (use warnings() to see the first 50)'")
+
+  return (list(QTN=gapitMain$QTN,GWAS=gapitMain$GWAS,h2=gapitMain$h2,Pred=gapitMain$Pred,compression=as.data.frame(cbind(gapitMain$Compression,h2)), 
   kinship.optimum=gapitMain$kinship.optimum,kinship=gapitMain$kinship,PCA=gapitMain$PC,
-    FDR=myPower$FDR,Power=myPower$Power,Power.Alpha=myPower$Power.Alpha,alpha=myPower$alpha,SUPER_GD=gapitMain$SUPER_GD))
+    FDR=myPower$FDR,Power=myPower$Power,Power.Alpha=myPower$Power.Alpha,alpha=myPower$alpha,SUPER_GD=gapitMain$SUPER_GD,P=gapitMain$P,effect.snp=gapitMain$effect.snp,effect.cv=gapitMain$effect.cv))
 }else{
 h2= as.matrix(as.numeric(as.vector(gapitMain$Compression[,5]))/(as.numeric(as.vector(gapitMain$Compression[,5]))+as.numeric(as.vector(gapitMain$Compression[,6]))),length(gapitMain$Compression[,6]),1)
 colnames(h2)=c("Heritability")
   print("GAPIT accomplished successfully for single trait. Results are saved. GPS are returned!")
-  return (list(QTN=gapitMain$QTN,GWAS=gapitMain$GWAS,GPS=gapitMain$GPS,Pred=gapitMain$Pred,compression=as.data.frame(cbind(gapitMain$Compression,h2)), 
+  print("It is OK to see this: 'There were 50 or more warnings (use warnings() to see the first 50)'")
+
+  return (list(QTN=gapitMain$QTN,GWAS=gapitMain$GWAS,h2=gapitMain$h2,Pred=gapitMain$Pred,compression=as.data.frame(cbind(gapitMain$Compression,h2)), 
   kinship.optimum=gapitMain$kinship.optimum,kinship=gapitMain$kinship,PCA=gapitMain$PC,
-    SUPER_GD=gapitMain$SUPER_GD))
+    SUPER_GD=gapitMain$SUPER_GD,P=gapitMain$P,effect.snp=gapitMain$effect.snp,effect.cv=gapitMain$effect.cv))
 
 }
 
-#Evaluate Power vs FDR and type I error
-myPower=GAPIT.Power(WS=WS, alpha=alpha, maxOut=maxOut,seqQTN=QTN.position,GM=GM,GWAS=gapitMain$GWAS)
-
-
-h2= as.matrix(as.numeric(as.vector(gapitMain$Compression[,5]))/(as.numeric(as.vector(gapitMain$Compression[,5]))+as.numeric(as.vector(gapitMain$Compression[,6]))),length(gapitMain$Compression[,6]),1)
-colnames(h2)=c("Heritability")
-  print("GAPIT accomplished successfully for single trait. Results are saved. GWAS and GPS are returned!")
-  return (list(QTN=gapitMain$QTN,GWAS=gapitMain$GWAS,GPS=gapitMain$GPS,Pred=gapitMain$Pred,compression=as.data.frame(cbind(gapitMain$Compression,h2)), 
-  kinship.optimum=gapitMain$kinship.optimum,kinship=gapitMain$kinship,PCA=gapitMain$PC,
-    FDR=myPower$FDR,Power=myPower$Power,Power.Alpha=myPower$Power.Alpha,alpha=myPower$alpha))
 
 }else{
   print("GAPIT accomplished successfully for multiple traits. Results are saved")
-  return (list(GWAS=NULL,GPS=NULL,Pred=NULL,compression=NULL,kinship.optimum=NULL,kinship=gapitMain$KI,PCA=gapitMain$PC))
+  print("It is OK to see this: 'There were 50 or more warnings (use warnings() to see the first 50)'")
+
+  
+  return (list(QTN=NULL,GWAS=NULL,h2=NULL,Pred=NULL,compression=NULL,kinship.optimum=NULL,kinship=gapitMain$KI,PCA=gapitMain$PC,P=gapitMain$P,effect.snp=gapitMain$effect.snp,effect.cv=gapitMain$effect.cv))
 }
 
 }# end ofdetecting null Y
-
 }  #end of GAPIT function
+#=============================================================================================
 

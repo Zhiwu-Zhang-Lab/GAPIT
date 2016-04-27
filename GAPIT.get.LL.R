@@ -33,7 +33,7 @@ cmpfun(function(pheno,geno=NULL,snp.pool,X0=NULL){
     X=X0
     
     #########SVD of X
-    K.X.svd= svd(snp.pool)
+    K.X.svd= svd(snp.pool,LINPACK=TRUE)######rivised by Jiabo Wang 2016.1.8
     # snp.pool=NA problem occurred
     #####rivised 2012.4.15 by qishan wang
     d=K.X.svd$d
@@ -44,13 +44,7 @@ cmpfun(function(pheno,geno=NULL,snp.pool,X0=NULL){
     
     #handler of single snp
     if(is.null(dim(U1))) U1=matrix(U1,ncol=1)
-    
-    #print("debug U1 X")
-    #print(dim(U1))
-    #print(length(U1))
-    #print(dim(X))
-    #print(length(X))
-    
+
     
     ###################
     n=nrow(U1)
@@ -113,7 +107,7 @@ cmpfun(function(pheno,geno=NULL,snp.pool,X0=NULL){
         
         #######get final beta
         #zw1=solve(beta1+beta2)
-        zw1 <- try(solve(beta1+beta2))
+        zw1 <- try(solve(beta1+beta2),silent=TRUE)
         if(inherits(zw1, "try-error")){
             zw1 <- ginv(beta1+beta2)
         }
@@ -217,4 +211,5 @@ cmpfun(function(pheno,geno=NULL,snp.pool,X0=NULL){
     return(list(beta=beta, delta=delta, LL=LL, vg=sigma_a,ve=sigma_e))
 }
 )#end of cmpfun(
+#=============================================================================================
 
