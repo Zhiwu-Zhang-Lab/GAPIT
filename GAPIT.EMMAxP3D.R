@@ -11,7 +11,7 @@ function(ys,xs,K=NULL,Z=NULL,X0=NULL,CVI=NULL,CV.Inheritance=NULL,GI=NULL,GP=NUL
 # Library used: EMMA (Kang et al, Genetics, Vol. 178, 1709-1723, March 2008)
 # Note: This function was modified from the function of emma.REML.t from the library
 ##############################################################################################
-  print("EMMAxP3D started...")
+#print("EMMAxP3D started...")
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="P3D Start")
 Memory=GAPIT.Memory(Memory=Memory,Infor="P3D Start")
 
@@ -76,7 +76,7 @@ if(inherits(eig.R, "try-error"))
 
  }
 #-------------------------------------------------------------------------------------------------------------------->
-print("Looping through traits...")
+#print("Looping through traits...")
 #Loop on Traits
 for (j in 1:g)
 {
@@ -121,7 +121,7 @@ if(optOnly){
 
   if(!is.null(K)){
    if(length(which(eig.L$values < 0)) > 0 ){
-    print("---------------------------------------------------The group kinship matrix at this compression level is not positive semidefinite. Please select another compression level.---------------------------------------------------")
+    #print("---------------------------------------------------The group kinship matrix at this compression level is not positive semidefinite. Please select another compression level.---------------------------------------------------")
            #return(list(ps = NULL, REMLs = 999999, stats = NULL, effect.est = NULL, dfs = NULL,maf=NULL,nobs = NULL,Timmer=Timmer,Memory=Memory,
            #vgs = 1.000, ves = 1.000, BLUP = NULL, BLUP_Plus_Mean = NULL,
            #PEV = NULL, BLUE=NULL))
@@ -230,7 +230,7 @@ if( is.null(Z) & !is.null(K))  eig.full.plus.delta <- as.matrix((eig.L$values + 
 
 if(!is.null(K)){
 if(length(which(eig.L$values < 0)) > 0 ){
- print("---------------------------------------------------The group kinship matrix at this compression level is not positive semidefinite. Please select another compression level.---------------------------------------------------")
+ #print("---------------------------------------------------The group kinship matrix at this compression level is not positive semidefinite. Please select another compression level.---------------------------------------------------")
        #return(list(ps = NULL, REMLs = 999999, stats = NULL, effect.est = NULL, dfs = NULL,maf=NULL,nobs = NULL,Timmer=Timmer,Memory=Memory,
         #vgs = 1.000, ves = 1.000, BLUP = NULL, BLUP_Plus_Mean = NULL,
         #PEV = NULL, BLUE=NULL))
@@ -1013,7 +1013,7 @@ if(!fullGD)
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="GWAS done for this Trait")
 Memory=GAPIT.Memory(Memory=Memory,Infor="GWAS done for this Trait")
 
-print("GAPIT.EMMAxP3D accomplished successfully!")
+#print("GAPIT.EMMAxP3D accomplished successfully!")
 
     return(list(ps = ps, REMLs = -2*REMLs, stats = stats, effect.est = effect.est, rsquare_base = rsquare_base, rsquare = rsquare, dfs = dfs, df = df, tvalue = tvalue, stderr = stderr,maf=maf,nobs = nobs,Timmer=Timmer,Memory=Memory,
         vgs = vgs, ves = ves, BLUP = BLUP, BLUP_Plus_Mean = BLUP_Plus_Mean,

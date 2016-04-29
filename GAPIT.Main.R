@@ -390,7 +390,7 @@ Memory=cp$Memory
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="PreP3D 2_cp")
 Memory=GAPIT.Memory(Memory=Memory,Infor="PreP3D 2_cp")
 
-print("BK...")
+#print("BK...")
 bk <- GAPIT.Block(Z=Z,GA=cp$GA,KG=cp$KG)
 
 Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="PreP3D 2_bk")
@@ -413,7 +413,7 @@ Timmer=GAPIT.Timmer(Timmer=Timmer,Infor="Prio PreP3D")
 Memory=GAPIT.Memory(Memory=Memory,Infor="Prio PreP3D")
 
 #Evaluating maximum likelohood
-print("Calling EMMAxP3D...")
+#print("Calling EMMAxP3D...")
 
 #print("It made it to here")
 #print("The dimension of xs is:")
@@ -423,7 +423,7 @@ print("Calling EMMAxP3D...")
 #write.table(zc$Z, "Z.csv", quote = FALSE, sep = ",", row.names = FALSE,col.names = TRUE)
 
 #print(dim(as.matrix(as.data.frame(GD[GTindex,colInclude]))))
-print("debug p3d 389")
+
 p3d <- GAPIT.EMMAxP3D(ys=ys,xs=as.matrix(as.data.frame(GD[GTindex,colInclude])),K = as.matrix(bk$KW) ,Z=matrix(as.numeric(as.matrix(zc$Z[,-1])),nrow=zrow,ncol=zcol),X0=X0,CVI=CVI,CV.Inheritance=CV.Inheritance,GI=GI,SNP.P3D=SNP.P3D,Timmer=Timmer,Memory=Memory,fullGD=fullGD,
         SNP.permutation=SNP.permutation, GP=GP,
 			 file.path=file.path,file.from=file.from,file.to=file.to,file.total=file.total, file.fragment = file.fragment, byFile=byFile, file.G=file.G,file.Ext.G=file.Ext.G,file.GD=file.GD, file.GM=file.GM, file.Ext.GD=file.Ext.GD,file.Ext.GM=file.Ext.GM,
@@ -461,9 +461,6 @@ Compression[count,4]=p3d$REMLs
 Compression[count,5]=p3d$vgs
 Compression[count,6]=p3d$ves
 #print("result saved")
-
-print(str(p3d))
-print("debug p3d 389 end")
 
 }else{# end of if(!byPass)
 
@@ -548,29 +545,17 @@ print(Compression[count,])
 
 }   # end of if(byPass)
 
-print("debug p3d A")
-print(str(p3d))
-
-
 }#end of for (ca in kinship.cluster)
 
-  print("debug p3d B")
-  print(str(p3d))
-  
 #Skip the rest group in case group 1 is finished
 if(group==1) break #To skip the rest group interations
 
 }#end of for (group in GROUP)
 }#end of for (kt in kinship.group)
 
-  print("debug p3d c")
-  print(str(p3d))
   
 }#end of for (inc in inclosure)
 }#end of for (bin in bin.level)
-
-print("debug before model selection")
-print(is(p3d))
 
 
 if(Model.selection == TRUE){ 
@@ -615,7 +600,6 @@ if(Model.selection == TRUE){
     #print("The dim of bk$KW is ")
     #print(dim(bk$KW))
     
-    print("debug p3d 565")
     
     p3d <- GAPIT.EMMAxP3D(ys=ys,xs=as.matrix(as.data.frame(GD[,1])),K = as.matrix(bk$KW) ,Z=Z1,X0=X0.test,CVI=CVI,CV.Inheritance=CV.Inheritance,GI=GI,SNP.P3D=SNP.P3D,Timmer=Timmer,Memory=Memory,fullGD=fullGD,
             SNP.permutation=SNP.permutation, GP=GP,
@@ -674,9 +658,6 @@ if(Model.selection == TRUE){
     
 
 } # where does it start: 522
-
-print("debug after model selection")
-print(is(p3d))
 
 print("---------------------Sandwich bottom bun-------------------------------")
 print("Compression") 
@@ -767,7 +748,6 @@ print("--------------  Sandwich bottom with raw burger------------------------")
  }
  
  print("--------------EMMAxP3D with the optimum setting-----------------------") 
- print("debug p3d 714")
  
   p3d <- GAPIT.EMMAxP3D(ys=ys,xs=as.matrix(as.data.frame(GD[GTindex,colInclude]))   ,K = as.matrix(bk$KW) ,Z=Z1,X0=as.matrix(X0),CVI=CVI, CV.Inheritance=CV.Inheritance,GI=GI,SNP.P3D=SNP.P3D,Timmer=Timmer,Memory=Memory,fullGD=fullGD,
           SNP.permutation=SNP.permutation, GP=GP,

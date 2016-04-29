@@ -8,6 +8,9 @@
 # Authors: You Tang and Zhiwu Zhang
 # Last update: March 11, 2016 
 ##############################################################################################
+
+if(nrow(myGI)<1000) return() #Markers are not enough for this analysis
+  
 if(is.null(myGI)){stop("Validation Invalid. Please select read valid Genotype flies  !")}
 
 if(is.null(myGD)){stop("Validation Invalid. Please select read valid Genotype flies  !")}
@@ -147,7 +150,6 @@ myGD3<-X[,kk3]
 ##set windows long 
 ##w1_start<-30
 ##w1_end<-230
-
 ###get windows numeric snp at the same chr 
 results3_100<-myFig23[w1_start:w1_end,]
 myGD3_100<-myGD3[,w1_start:w1_end]

@@ -6,7 +6,7 @@ function(Z,GAU){
 # Last update: April 14, 2011 
 ##############################################################################################
 #Extraction of GAU coresponding to Z, sort GAU rowwise to mach columns of Z, and make design matrix
-print("GAPIT.ZmatrixCompress")
+#print("GAPIT.ZmatrixCompress")
 #print(dim(Z))
 #print(dim(GAU))
 
